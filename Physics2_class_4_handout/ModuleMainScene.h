@@ -20,7 +20,7 @@ public:
 
 public:
 	p2List<PhysBody*> balls;
-	PhysBody* board_body = nullptr;
+	p2List<PhysBody*> board_body;
 
 	SDL_Texture* board_texture = nullptr;
 	uint bonus_fx;
