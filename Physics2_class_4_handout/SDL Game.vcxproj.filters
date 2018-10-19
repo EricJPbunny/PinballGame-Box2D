@@ -56,6 +56,12 @@
     <ClInclude Include="ModulePhysics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BoardPoints.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleMainScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -89,6 +95,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModulePhysics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleMainScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

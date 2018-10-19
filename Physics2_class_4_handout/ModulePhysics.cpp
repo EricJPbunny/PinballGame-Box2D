@@ -35,23 +35,6 @@ bool ModulePhysics::Start()
 	b2BodyDef bd;
 	ground = world->CreateBody(&bd);
 
-	// big static circle as "ground" in the middle of the screen
-	int x = SCREEN_WIDTH / 2;
-	int y = SCREEN_HEIGHT / 1.5f;
-	int diameter = SCREEN_WIDTH / 2;
-
-	b2BodyDef body;
-	body.type = b2_staticBody;
-	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
-
-	b2Body* big_ball = world->CreateBody(&body);
-
-	b2CircleShape shape;
-	shape.m_radius = PIXEL_TO_METERS(diameter) * 0.5f;
-
-	b2FixtureDef fixture;
-	fixture.shape = &shape;
-	big_ball->CreateFixture(&fixture);
 
 	return true;
 }
@@ -154,7 +137,7 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 {
 	b2BodyDef body;
-	body.type = b2_dynamicBody;
+	body.type = b2_staticBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
@@ -194,7 +177,7 @@ update_status ModulePhysics::PostUpdate()
 	if(!debug)
 		return UPDATE_CONTINUE;
 
-	b2Body* selected_body = nullptr;
+	b2Vec2 mouse_position = { PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()) };
 
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
@@ -266,31 +249,16 @@ update_status ModulePhysics::PostUpdate()
 				break;
 			}
 
-			// TODO 1: If mouse button 1 is pressed ...
 			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
 			{
-				b2Fixture* fixture = b->GetFixtureList();
-				while (fixture != nullptr)
-				{
-					if (fixture->GetShape()->TestPoint(b->GetTransform(),{ PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()) }))
-					{
-						selected_body = b;
-
-					}
-					fixture = fixture->GetNext();
+				if (f->TestPoint(mouse_position)) {
+					selected_body = f->GetBody();
 				}
-				
 			}
-			// test if the current body contains mouse position
 		}
 	}
 
-	// If a body was selected we will attach a mouse joint to it
-	// so we can pull it around
-	// TODO 2: If a body was selected, create a mouse joint
-	// using mouse_joint class property
-
-	if (selected_body)
+	if (selected_body && !mouse_joint)
 	{
 		b2MouseJointDef def;
 		def.bodyA = ground;
@@ -302,20 +270,22 @@ update_status ModulePhysics::PostUpdate()
 		mouse_joint = (b2MouseJoint*)world->CreateJoint(&def);
 	}
 
-	// TODO 3: If the player keeps pressing the mouse button, update
-	// target position and draw a red line between both anchor points
-	if (mouse_joint)
+	if (mouse_joint && selected_body)
 	{
-		this->mouse_joint->SetTarget({ PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()) });
-		App->renderer->DrawLine(METERS_TO_PIXELS(mouse_joint->GetBodyB()->GetPosition().x), METERS_TO_PIXELS(mouse_joint->GetBodyB()->GetPosition().y), App->input->GetMouseX(), App->input->GetMouseY(), 155, 0, 255);
+		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
+		{
+			mouse_joint->SetTarget({ PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()) });
+			App->renderer->DrawLine(METERS_TO_PIXELS(mouse_joint->GetBodyB()->GetPosition().x), METERS_TO_PIXELS(mouse_joint->GetBodyB()->GetPosition().y), App->input->GetMouseX(), App->input->GetMouseY(), 255, 0, 0);
+		}
+
 		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP)
 		{
 			world->DestroyJoint(mouse_joint);
 			mouse_joint = nullptr;
+			selected_body = nullptr;
 		}
 
 	}
-	// TODO 4: If the player releases the mouse button, destroy the joint
 
 
 	return UPDATE_CONTINUE;
