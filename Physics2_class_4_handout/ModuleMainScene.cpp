@@ -74,7 +74,7 @@ bool ModuleMainScene::Start()
 	flipperRdef.enableLimit = true;
 	flipperRdef.lowerAngle = -0.15f * b2_pi; // -90 degrees
 	flipperRdef.upperAngle = 0.15f * b2_pi; // 45 degrees
-	flipperRdef.enableMotor = false;
+	flipperRdef.enableMotor = true;
 	flipperRdef.maxMotorTorque = 10.0f;
 	flipperRdef.motorSpeed = -10.0f;
 	right_flipper_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&flipperRdef);
@@ -87,9 +87,9 @@ bool ModuleMainScene::Start()
 	flipperLdef.enableLimit = true;
 	flipperLdef.lowerAngle = -0.15f * b2_pi; // -90 degrees
 	flipperLdef.upperAngle = 0.15f * b2_pi; // 45 degrees
-	flipperLdef.enableMotor = false;
+	flipperLdef.enableMotor = true;
 	flipperLdef.maxMotorTorque = 10.0f;
-	flipperLdef.motorSpeed = -10.0f;
+	flipperLdef.motorSpeed = 10.0f;
 	left_flipper_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&flipperLdef);
 
 	return ret;
@@ -126,11 +126,11 @@ update_status ModuleMainScene::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{
+		right_flipper->body->ApplyTorque(500, true);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 	{
-		right_flipper->body->ApplyTorque(500, true);
 		left_flipper->body->ApplyTorque(-500, true);
 	}
 
