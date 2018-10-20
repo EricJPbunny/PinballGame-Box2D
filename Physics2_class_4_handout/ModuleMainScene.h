@@ -5,6 +5,7 @@
 #include "Globals.h"
 
 class PhysBody;
+class b2RevoluteJoint;
 
 class ModuleMainScene :
 	public Module
@@ -21,8 +22,16 @@ public:
 public:
 	p2List<PhysBody*> balls;
 	p2List<PhysBody*> board_body;
+	PhysBody* right_wall = nullptr;
+	PhysBody* right_flipper = nullptr;
+	PhysBody* left_flipper = nullptr;
+	b2RevoluteJoint* right_flipper_joint = nullptr;
+	b2RevoluteJoint* left_flipper_joint = nullptr;
 
 	SDL_Texture* board_texture = nullptr;
+	SDL_Texture* flipperR_texture = nullptr;
+	SDL_Texture* flipperL_texture = nullptr;
+
 	uint bonus_fx;
 };
 

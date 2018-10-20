@@ -1,7 +1,5 @@
 #pragma once
 
-#include "p2Point.h"
-
 const int length = 106;
 int numberOfBoardElements = 5;
 
@@ -148,4 +146,31 @@ int Mid_Left_Thingy[30] = {
 	62, 417,
 	67, 428,
 	68, 444
+};
+
+int FlipperR[22] = {
+	42, 1,
+	49, 3,
+	52, 8,
+	52, 15,
+	49, 19,
+	42, 21,
+	8, 18,
+	3, 16,
+	1, 11,
+	4, 6,
+	9, 5
+};
+
+int FlipperL[20] = {
+	9, 2,
+	3, 5,
+	1, 11,
+	3, 17,
+	8, 21,
+	46, 19,
+	50, 17,
+	52, 12,
+	50, 8,
+	46, 6
 };
