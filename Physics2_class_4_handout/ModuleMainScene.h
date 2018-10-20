@@ -6,6 +6,7 @@
 
 class PhysBody;
 class b2RevoluteJoint;
+class b2DistanceJoint;
 
 class ModuleMainScene :
 	public Module
@@ -25,12 +26,16 @@ public:
 	PhysBody* right_wall = nullptr;
 	PhysBody* right_flipper = nullptr;
 	PhysBody* left_flipper = nullptr;
+	PhysBody* launcher_top = nullptr;
+	PhysBody* launcher_base = nullptr;
 	b2RevoluteJoint* right_flipper_joint = nullptr;
 	b2RevoluteJoint* left_flipper_joint = nullptr;
+	b2DistanceJoint* launcher_joint = nullptr;
 
 	SDL_Texture* board_texture = nullptr;
 	SDL_Texture* flipperR_texture = nullptr;
 	SDL_Texture* flipperL_texture = nullptr;
+	SDL_Texture* ball_texture = nullptr;
 
 	uint bonus_fx;
 };
