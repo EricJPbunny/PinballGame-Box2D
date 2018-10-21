@@ -14,6 +14,8 @@ ModuleMainScene::ModuleMainScene(Application* app, bool start_enabled) : Module(
 	for (int i = 0; i < FLIPPER_MAX; i++)
 	{
 		flippers[i] = nullptr;
+		flipper_joints[i] = nullptr;
+		flippers_texture[i] = nullptr;
 	}
 }
 
@@ -31,8 +33,12 @@ bool ModuleMainScene::Start()
 
 	//Load Textures 
 	board_texture = App->textures->Load("pinball/Pinball_GameBoard.png");
-	flipperR_texture = App->textures->Load("pinball/FlipperR.png");
-	flipperL_texture = App->textures->Load("pinball/FlipperL.png");
+	flippers_texture[BOTTOMRIGHT] = App->textures->Load("pinball/FlipperR.png");
+	flippers_texture[BOTTOMLEFT] = App->textures->Load("pinball/FlipperL.png");
+	flippers_texture[LEFT] = App->textures->Load("pinball/FlipperL2.png");
+	flippers_texture[RIGHT] = App->textures->Load("pinball/FlipperR2.png");
+	flippers_texture[TOPLEFT] = App->textures->Load("pinball/FlipperL2.png");
+	flippers_texture[TOPRIGHT] = App->textures->Load("pinball/FlipperR2.png");
 	ball_texture = App->textures->Load("pinball/Pinball_Ball.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	
@@ -46,63 +52,24 @@ bool ModuleMainScene::Start()
 	board_body.add(App->physics->CreateChain(0, 0, Top_Left_Turbo, 34));
 	board_body.add(App->physics->CreateChain(0, 0, Mid_Left_Thingy, 30));
 
-	//Add physic bodies flippers to flippers list
-	flippers[BOTTOMRIGHT] = App->physics->CreateChain(184, 666, FlipperR, 20, b2_dynamicBody);
-	flippers[BOTTOMLEFT] = App->physics->CreateChain(112, 666, FlipperL, 20, b2_dynamicBody);
+	//Creating flippers
+	flippers[BOTTOMRIGHT] = App->physics->CreateFlipper(BOTTOMRIGHT, 184, 666, FlipperR, 20, 232, 676, -10.0f, 10.0f, -0.15f, 0.15f, board_body.getFirst()->data->body);
+	flippers[BOTTOMLEFT] = App->physics->CreateFlipper(BOTTOMLEFT, 112, 666, FlipperL, 20, 119, 676, 10.0f, 10.0f, -0.15f, 0.15f, board_body.getFirst()->data->body);
+	flippers[LEFT] = App->physics->CreateFlipper(LEFT, 65, 323, FlipperL2, 16, 69, 333, 10.0f, 10.0f, 0.0f, 0.40f, board_body.getFirst()->data->body);
+	flippers[RIGHT] = App->physics->CreateFlipper(RIGHT, 303, 408, FlipperR2, 18, 338, 416, -10.0f, 10.0f, -0.40f, 0.0f, board_body.getFirst()->data->body);
+	flippers[TOPRIGHT] = App->physics->CreateFlipper(TOPRIGHT, 292, 142, FlipperR2, 18, 324, 149, -10.0f, 10.0f, -0.21f, 0.15f, board_body.getFirst()->data->body);
+	flippers[TOPLEFT] = App->physics->CreateFlipper(TOPLEFT, 239, 142, FlipperL2, 16, 244, 149, 10.0f, 10.0f, -0.15f, 0.21f, board_body.getFirst()->data->body);
 
 	//Create launcher
 	launcher_top = App->physics->CreateRectangle(354, 624, 16, 16);
 	launcher_base = App->physics->CreateRectangle(356, 710, 16, 16);
 	launcher_base->body->SetType(b2_staticBody);
-
-	b2BodyDef bd;
-	bd.type = b2_dynamicBody;
-	b2Body* b = App->physics->world->CreateBody(&bd);
-
-	b2PolygonShape dshape;
-	dshape.SetAsBox(PIXEL_TO_METERS(64)*0.5f, PIXEL_TO_METERS(35)*0.5f);
-
-	b2FixtureDef dummyfix;
-	dummyfix.shape = &dshape;
-	dummyfix.density = 1.0f;
-
-	b->CreateFixture(&dummyfix);
-
-	b2MassData* massdata = new b2MassData();
-	b->GetMassData(massdata);
-	flippers[BOTTOMLEFT]->body->SetMassData(massdata);
-	flippers[BOTTOMRIGHT]->body->SetMassData(massdata);
-
-
-	b2RevoluteJointDef flipperRdef;
-	flipperRdef.bodyA = board_body.getFirst()->data->body;
-	flipperRdef.bodyB = flippers[BOTTOMRIGHT]->body;
-	flipperRdef.Initialize(flipperRdef.bodyA, flipperRdef.bodyB, {PIXEL_TO_METERS(232), PIXEL_TO_METERS(676)});
-	flipperRdef.enableLimit = true;
-	flipperRdef.lowerAngle = -0.15f * b2_pi; // -90 degrees
-	flipperRdef.upperAngle = 0.15f * b2_pi; // 45 degrees
-	flipperRdef.enableMotor = true;
-	flipperRdef.maxMotorTorque = 10.0f;
-	flipperRdef.motorSpeed = -10.0f;
-	right_flipper_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&flipperRdef);
 	
-
-	b2RevoluteJointDef flipperLdef;
-	flipperLdef.bodyA = board_body.getFirst()->data->body;
-	flipperLdef.bodyB = flippers[BOTTOMLEFT]->body;
-	flipperLdef.Initialize(flipperLdef.bodyA, flipperLdef.bodyB, { PIXEL_TO_METERS(119), PIXEL_TO_METERS(676) });
-	flipperLdef.enableLimit = true;
-	flipperLdef.lowerAngle = -0.15f * b2_pi; 
-	flipperLdef.upperAngle = 0.15f * b2_pi; 
-	flipperLdef.enableMotor = true;
-	flipperLdef.maxMotorTorque = 10.0f;
-	flipperLdef.motorSpeed = 10.0f;
-	left_flipper_joint = (b2RevoluteJoint*)App->physics->world->CreateJoint(&flipperLdef);
-
+	
 	b2DistanceJointDef launcherDef;
 	launcherDef.collideConnected = true;
 	launcherDef.frequencyHz = 30;
-	launcherDef.dampingRatio = 0.5f;
+	launcherDef.dampingRatio = 0.1f;
 	launcherDef.Initialize(launcher_top->body, launcher_base->body, { PIXEL_TO_METERS(357), PIXEL_TO_METERS(636) }, { PIXEL_TO_METERS(357), PIXEL_TO_METERS(710) });
 	launcher_joint = (b2DistanceJoint*)App->physics->world->CreateJoint(&launcherDef);
 	return ret;
@@ -139,12 +106,18 @@ update_status ModuleMainScene::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{
-		flippers[BOTTOMRIGHT]->body->ApplyAngularImpulse(100, true);
+		for (int i = 0; i < FLIPPER_MAX; i+=2)
+		{
+			flippers[i]->body->ApplyAngularImpulse(100, true);
+		}
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 	{
-		flippers[BOTTOMLEFT]->body->ApplyAngularImpulse(-100, true);
+		for (int i = 1; i < FLIPPER_MAX; i += 2)
+		{
+			flippers[i]->body->ApplyAngularImpulse(-100, true);
+		}
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
@@ -162,14 +135,18 @@ update_status ModuleMainScene::Update()
 	// All draw functions ------------------------------------------------------
 
 	App->renderer->Blit(board_texture, 0, 0, NULL, 1.0f);
-	App->renderer->Blit(flipperR_texture, METERS_TO_PIXELS(flippers[BOTTOMRIGHT]->body->GetPosition().x), METERS_TO_PIXELS(flippers[BOTTOMRIGHT]->body->GetPosition().y), NULL, 1.0F, flippers[BOTTOMRIGHT]->GetRotation(), PIXEL_TO_METERS(42), PIXEL_TO_METERS(10));
-	App->renderer->Blit(flipperL_texture, METERS_TO_PIXELS(flippers[BOTTOMLEFT]->body->GetPosition().x), METERS_TO_PIXELS(flippers[BOTTOMLEFT]->body->GetPosition().y), NULL, 1.0F, flippers[BOTTOMLEFT]->GetRotation(), PIXEL_TO_METERS(10), PIXEL_TO_METERS(10));
+	
 
 	for (p2List_item <PhysBody*>* ball = balls.getFirst(); ball; ball = ball->next)
 	{
 		int x, y;
 		ball->data->GetPosition(x, y);
 		App->renderer->Blit(ball_texture, x, y, NULL, 1.0F);
+	}
+
+	for (int i = 0; i < FLIPPER_MAX; i++)
+	{
+		App->renderer->Blit(flippers_texture[i], METERS_TO_PIXELS(flippers[i]->body->GetPosition().x), METERS_TO_PIXELS(flippers[i]->body->GetPosition().y), NULL, 1.0F, flippers[i]->GetRotation(), PIXEL_TO_METERS(10), PIXEL_TO_METERS(10));
 	}
 
 	return UPDATE_CONTINUE;

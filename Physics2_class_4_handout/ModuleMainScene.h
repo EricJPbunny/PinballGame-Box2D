@@ -29,13 +29,11 @@ public:
 	PhysBody* flippers[FLIPPER_MAX];
 	PhysBody* launcher_top = nullptr;
 	PhysBody* launcher_base = nullptr;
-	b2RevoluteJoint* right_flipper_joint = nullptr;
-	b2RevoluteJoint* left_flipper_joint = nullptr;
+	b2RevoluteJoint* flipper_joints[FLIPPER_MAX];
 	b2DistanceJoint* launcher_joint = nullptr;
 
 	SDL_Texture* board_texture = nullptr;
-	SDL_Texture* flipperR_texture = nullptr;
-	SDL_Texture* flipperL_texture = nullptr;
+	SDL_Texture* flippers_texture[FLIPPER_MAX];
 	SDL_Texture* ball_texture = nullptr;
 
 	uint bonus_fx;
