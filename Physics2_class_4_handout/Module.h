@@ -4,6 +4,7 @@
 
 class Application;
 class PhysBody;
+class b2Contact;
 
 class Module
 {
@@ -72,7 +73,7 @@ public:
 		return true; 
 	}
 
-	virtual void OnCollision(PhysBody* bodyA, PhysBody* bodyB)
+	virtual void OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* contact)
 	{
 	}
 };

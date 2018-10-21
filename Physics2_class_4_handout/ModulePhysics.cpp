@@ -52,7 +52,7 @@ update_status ModulePhysics::PreUpdate()
 			PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
 			PhysBody* pb2 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
 			if(pb1 && pb2 && pb1->listener)
-				pb1->listener->OnCollision(pb1, pb2);
+				pb1->listener->OnCollision(pb1, pb2, c);
 		}
 	}
 
@@ -206,6 +206,26 @@ PhysBody * ModulePhysics::CreateFlipper(int id, int x, int y, int * points, int 
 	def.Initialize(def.bodyA, def.bodyB, { PIXEL_TO_METERS(anchorX), PIXEL_TO_METERS(anchorY) });
 	App->scene_main->flipper_joints[id] = (b2RevoluteJoint*)App->physics->world->CreateJoint(&def);
 	return flipper;
+}
+
+PhysBody * ModulePhysics::CreateLauncher(int x, int y, int width, int height, int frequency, float damping)
+{
+	PhysBody* launcher = CreateRectangle(x, y, width, height);
+	b2DistanceJointDef def;
+	def.collideConnected = true;
+	def.frequencyHz = frequency;
+	def.dampingRatio = damping;
+	def.Initialize(App->scene_main->launcher_base->body, launcher->body, { PIXEL_TO_METERS(357), PIXEL_TO_METERS(636) }, { PIXEL_TO_METERS(357), PIXEL_TO_METERS(710) });
+	App->scene_main->launcher_joint = (b2DistanceJoint*)App->physics->world->CreateJoint(&def);
+	return launcher;
+}
+
+PhysBody * ModulePhysics::CreateBumper(int x, int y, int radius)
+{
+	PhysBody* bumper = CreateCircle(x, y, radius);
+	bumper->body->SetType(b2_staticBody);
+	bumper->type = BUMPER;
+	return bumper;
 }
 
 // 
@@ -411,8 +431,8 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
 
 	if(physA && physA->listener != NULL)
-		physA->listener->OnCollision(physA, physB);
+		physA->listener->OnCollision(physA, physB, contact);
 
 	if(physB && physB->listener != NULL)
-		physB->listener->OnCollision(physB, physA);
+		physB->listener->OnCollision(physB, physA, contact);
 }

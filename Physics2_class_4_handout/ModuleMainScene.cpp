@@ -17,6 +17,11 @@ ModuleMainScene::ModuleMainScene(Application* app, bool start_enabled) : Module(
 		flipper_joints[i] = nullptr;
 		flippers_texture[i] = nullptr;
 	}
+	
+	for (int i = 0; i < 2; i++)
+	{
+		bumpers[i] = nullptr;
+	}
 }
 
 ModuleMainScene::~ModuleMainScene()
@@ -61,17 +66,13 @@ bool ModuleMainScene::Start()
 	flippers[TOPLEFT] = App->physics->CreateFlipper(TOPLEFT, 239, 142, FlipperL2, 16, 244, 149, 10.0f, 10.0f, -0.15f, 0.21f, board_body.getFirst()->data->body);
 
 	//Create launcher
-	launcher_top = App->physics->CreateRectangle(354, 624, 16, 16);
-	launcher_base = App->physics->CreateRectangle(356, 710, 16, 16);
+	launcher_base = App->physics->CreateRectangle(354, 710, 16, 16);
 	launcher_base->body->SetType(b2_staticBody);
-	
-	
-	b2DistanceJointDef launcherDef;
-	launcherDef.collideConnected = true;
-	launcherDef.frequencyHz = 30;
-	launcherDef.dampingRatio = 0.1f;
-	launcherDef.Initialize(launcher_top->body, launcher_base->body, { PIXEL_TO_METERS(357), PIXEL_TO_METERS(636) }, { PIXEL_TO_METERS(357), PIXEL_TO_METERS(710) });
-	launcher_joint = (b2DistanceJoint*)App->physics->world->CreateJoint(&launcherDef);
+	launcher_top = App->physics->CreateLauncher(356, 624, 16, 16, 30, 0.1f);
+
+	//Create bumpers
+	bumpers[0] = App->physics->CreateBumper(319, 256, 24);
+	bumpers[1] = App->physics->CreateBumper(218, 345, 24);
 	return ret;
 }
 
@@ -152,7 +153,16 @@ update_status ModuleMainScene::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
+void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* contact)
 {
-	App->audio->PlayFx(bonus_fx);
+	b2WorldManifold worldManifold;
+	switch (bodyB->type)
+	{
+	case BUMPER: App->audio->PlayFx(bonus_fx);
+		contact->GetWorldManifold(&worldManifold);
+		bodyA->body->ApplyForce(100*worldManifold.normal, worldManifold.points[0], true);
+		break;
+	case TARGET: break;
+	default: break;
+	}
 }
