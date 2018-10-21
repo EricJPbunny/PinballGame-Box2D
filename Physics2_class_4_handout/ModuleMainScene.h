@@ -8,6 +8,8 @@ class PhysBody;
 class b2RevoluteJoint;
 class b2DistanceJoint;
 
+enum FLIPPER {BOTTOMRIGHT, BOTTOMLEFT, RIGHT, LEFT, TOPRIGHT, TOPLEFT, FLIPPER_MAX};
+
 class ModuleMainScene :
 	public Module
 {
@@ -24,8 +26,7 @@ public:
 	p2List<PhysBody*> balls;
 	p2List<PhysBody*> board_body;
 	PhysBody* right_wall = nullptr;
-	PhysBody* right_flipper = nullptr;
-	PhysBody* left_flipper = nullptr;
+	PhysBody* flippers[FLIPPER_MAX];
 	PhysBody* launcher_top = nullptr;
 	PhysBody* launcher_base = nullptr;
 	b2RevoluteJoint* right_flipper_joint = nullptr;

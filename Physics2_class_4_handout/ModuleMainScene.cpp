@@ -11,11 +11,15 @@
 
 ModuleMainScene::ModuleMainScene(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-
+	for (int i = 0; i < FLIPPER_MAX; i++)
+	{
+		flippers[i] = nullptr;
+	}
 }
 
 ModuleMainScene::~ModuleMainScene()
-{}
+{
+}
 
 // Load assets
 bool ModuleMainScene::Start()
@@ -43,8 +47,8 @@ bool ModuleMainScene::Start()
 	board_body.add(App->physics->CreateChain(0, 0, Mid_Left_Thingy, 30));
 
 	//Add physic bodies flippers to flippers list
-	right_flipper = App->physics->CreateChain(184, 666, FlipperR, 20, b2_dynamicBody);
-	left_flipper = App->physics->CreateChain(112, 666, FlipperL, 20, b2_dynamicBody);
+	flippers[BOTTOMRIGHT] = App->physics->CreateChain(184, 666, FlipperR, 20, b2_dynamicBody);
+	flippers[BOTTOMLEFT] = App->physics->CreateChain(112, 666, FlipperL, 20, b2_dynamicBody);
 
 	//Create launcher
 	launcher_top = App->physics->CreateRectangle(354, 624, 16, 16);
@@ -66,13 +70,13 @@ bool ModuleMainScene::Start()
 
 	b2MassData* massdata = new b2MassData();
 	b->GetMassData(massdata);
-	left_flipper->body->SetMassData(massdata);
-	right_flipper->body->SetMassData(massdata);
+	flippers[BOTTOMLEFT]->body->SetMassData(massdata);
+	flippers[BOTTOMRIGHT]->body->SetMassData(massdata);
 
 
 	b2RevoluteJointDef flipperRdef;
 	flipperRdef.bodyA = board_body.getFirst()->data->body;
-	flipperRdef.bodyB = right_flipper->body;
+	flipperRdef.bodyB = flippers[BOTTOMRIGHT]->body;
 	flipperRdef.Initialize(flipperRdef.bodyA, flipperRdef.bodyB, {PIXEL_TO_METERS(232), PIXEL_TO_METERS(676)});
 	flipperRdef.enableLimit = true;
 	flipperRdef.lowerAngle = -0.15f * b2_pi; // -90 degrees
@@ -85,7 +89,7 @@ bool ModuleMainScene::Start()
 
 	b2RevoluteJointDef flipperLdef;
 	flipperLdef.bodyA = board_body.getFirst()->data->body;
-	flipperLdef.bodyB = left_flipper->body;
+	flipperLdef.bodyB = flippers[BOTTOMLEFT]->body;
 	flipperLdef.Initialize(flipperLdef.bodyA, flipperLdef.bodyB, { PIXEL_TO_METERS(119), PIXEL_TO_METERS(676) });
 	flipperLdef.enableLimit = true;
 	flipperLdef.lowerAngle = -0.15f * b2_pi; 
@@ -135,12 +139,12 @@ update_status ModuleMainScene::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{
-		right_flipper->body->ApplyAngularImpulse(100, true);
+		flippers[BOTTOMRIGHT]->body->ApplyAngularImpulse(100, true);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 	{
-		left_flipper->body->ApplyAngularImpulse(-100, true);
+		flippers[BOTTOMLEFT]->body->ApplyAngularImpulse(-100, true);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
@@ -158,8 +162,8 @@ update_status ModuleMainScene::Update()
 	// All draw functions ------------------------------------------------------
 
 	App->renderer->Blit(board_texture, 0, 0, NULL, 1.0f);
-	App->renderer->Blit(flipperR_texture, METERS_TO_PIXELS(right_flipper->body->GetPosition().x), METERS_TO_PIXELS(right_flipper->body->GetPosition().y), NULL, 1.0F, right_flipper->GetRotation(), PIXEL_TO_METERS(42), PIXEL_TO_METERS(10));
-	App->renderer->Blit(flipperL_texture, METERS_TO_PIXELS(left_flipper->body->GetPosition().x), METERS_TO_PIXELS(left_flipper->body->GetPosition().y), NULL, 1.0F, left_flipper->GetRotation(), PIXEL_TO_METERS(10), PIXEL_TO_METERS(10));
+	App->renderer->Blit(flipperR_texture, METERS_TO_PIXELS(flippers[BOTTOMRIGHT]->body->GetPosition().x), METERS_TO_PIXELS(flippers[BOTTOMRIGHT]->body->GetPosition().y), NULL, 1.0F, flippers[BOTTOMRIGHT]->GetRotation(), PIXEL_TO_METERS(42), PIXEL_TO_METERS(10));
+	App->renderer->Blit(flipperL_texture, METERS_TO_PIXELS(flippers[BOTTOMLEFT]->body->GetPosition().x), METERS_TO_PIXELS(flippers[BOTTOMLEFT]->body->GetPosition().y), NULL, 1.0F, flippers[BOTTOMLEFT]->GetRotation(), PIXEL_TO_METERS(10), PIXEL_TO_METERS(10));
 
 	for (p2List_item <PhysBody*>* ball = balls.getFirst(); ball; ball = ball->next)
 	{
