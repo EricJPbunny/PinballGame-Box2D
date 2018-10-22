@@ -12,7 +12,7 @@
 #define METERS_TO_PIXELS(m) ((int) floor(PIXELS_PER_METER * m))
 #define PIXEL_TO_METERS(p)  ((float) METER_PER_PIXEL * p)
 
-enum type {NONE, BUMPER, TARGET };
+enum type {NONE, BUMPER, BONUS, TARGET };
 
 // Small class to return to other modules to track position and rotation of physics bodies
 class PhysBody
@@ -47,6 +47,8 @@ public:
 
 	PhysBody* CreateCircle(int x, int y, int radius);
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
+	PhysBody* CreateBonus(int x, int y, int width, int height);
+	PhysBody* CreateTarget(int x, int y, int width, int height, float32 angle);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, int* points, int size, b2BodyType = b2_staticBody);
 	PhysBody* CreateFlipper(int id, int x, int y, int* points, int size, int anchorX, int anchorY, float motorspeed, float motormaxspeed, float lowerAngle, float upperAngle, b2Body* bodyB);

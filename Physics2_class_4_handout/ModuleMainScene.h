@@ -29,6 +29,8 @@ public:
 	PhysBody* right_wall = nullptr;
 	PhysBody* flippers[FLIPPER_MAX];
 	PhysBody* bumpers[2];
+	PhysBody* bonus[6];
+	PhysBody* targets[8];
 	PhysBody* launcher_top = nullptr;
 	PhysBody* launcher_base = nullptr;
 	b2RevoluteJoint* flipper_joints[FLIPPER_MAX];
@@ -39,5 +41,6 @@ public:
 	SDL_Texture* ball_texture = nullptr;
 
 	uint bonus_fx;
+	uint target_fx;
 };
 

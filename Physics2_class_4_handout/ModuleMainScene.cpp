@@ -22,6 +22,11 @@ ModuleMainScene::ModuleMainScene(Application* app, bool start_enabled) : Module(
 	{
 		bumpers[i] = nullptr;
 	}
+
+	for (int i = 0; i < 8; i++)
+	{
+		targets[i] = nullptr;
+	}
 }
 
 ModuleMainScene::~ModuleMainScene()
@@ -46,6 +51,7 @@ bool ModuleMainScene::Start()
 	flippers_texture[TOPRIGHT] = App->textures->Load("pinball/FlipperR2.png");
 	ball_texture = App->textures->Load("pinball/Pinball_Ball.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
+	target_fx = App->audio->LoadFx("pinball/target.wav");
 	
 	//Add board bodies the the board list
 	#include "BoardPoints.h"
@@ -73,6 +79,24 @@ bool ModuleMainScene::Start()
 	//Create bumpers
 	bumpers[0] = App->physics->CreateBumper(319, 256, 24);
 	bumpers[1] = App->physics->CreateBumper(218, 345, 24);
+
+	//Create bonus
+	bonus[0] = App->physics->CreateBonus(97, 443, 30, 30);
+	bonus[1] = App->physics->CreateBonus(183, 425, 30, 30);
+	bonus[2] = App->physics->CreateBonus(272, 447, 30, 30);
+	bonus[3] = App->physics->CreateBonus(136, 558, 30, 30);
+	bonus[4] = App->physics->CreateBonus(219, 556, 30, 30);
+	bonus[5] = App->physics->CreateBonus(179, 634, 30, 30);
+
+	//Create targets
+	targets[0] = App->physics->CreateTarget(67, 380, 5, 20, 0.75f);
+	targets[1] = App->physics->CreateTarget(52, 269, 5, 20, 0.0f);
+	targets[2] = App->physics->CreateTarget(51, 234, 5, 20, 0.0f);
+	targets[3] = App->physics->CreateTarget(362, 343, 5, 20, 0.0f);
+	targets[4] = App->physics->CreateTarget(363, 201, 5, 20, 0.0f);
+	targets[5] = App->physics->CreateTarget(62, 160, 5, 20, 0.40f);
+	targets[6] = App->physics->CreateTarget(231, 34, 5, 20, 0.75f);
+	targets[7] = App->physics->CreateTarget(340, 34, 5, 20, -0.75f);
 	return ret;
 }
 
@@ -158,11 +182,12 @@ void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* c
 	b2WorldManifold worldManifold;
 	switch (bodyB->type)
 	{
-	case BUMPER: App->audio->PlayFx(bonus_fx);
+	case BUMPER: 
 		contact->GetWorldManifold(&worldManifold);
 		bodyA->body->ApplyForce(100*worldManifold.normal, worldManifold.points[0], true);
 		break;
-	case TARGET: break;
+	case TARGET: App->audio->PlayFx(target_fx); break;
+	case BONUS: App->audio->PlayFx(bonus_fx); break;
 	default: break;
 	}
 }

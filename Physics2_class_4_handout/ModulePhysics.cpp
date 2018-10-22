@@ -109,6 +109,21 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
 	return pbody;
 }
 
+PhysBody * ModulePhysics::CreateBonus(int x, int y, int width, int height)
+{
+	PhysBody* bonus = CreateRectangleSensor(x, y, width, height);
+	bonus->type = BONUS;
+	return bonus;
+}
+
+PhysBody * ModulePhysics::CreateTarget(int x, int y, int width, int height, float32 angle)
+{
+	PhysBody* target = CreateRectangleSensor(x, y, width, height);
+	target->type = TARGET;
+	target->body->SetTransform(target->body->GetPosition(), angle);
+	return target;
+}
+
 PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int height)
 {
 	b2BodyDef body;
