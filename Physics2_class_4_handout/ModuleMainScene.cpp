@@ -48,6 +48,7 @@ bool ModuleMainScene::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 	score = 0;
+	nBalls = 3;
 	//Load Textures 
 	board_texture = App->textures->Load("pinball/Pinball_GameBoard.png");
 	flippers_texture[BOTTOMRIGHT] = App->textures->Load("pinball/FlipperR.png");
@@ -67,6 +68,8 @@ bool ModuleMainScene::Start()
 	score_texture[7] = App->textures->Load("pinball/7.png");
 	score_texture[8] = App->textures->Load("pinball/8.png");
 	score_texture[9] = App->textures->Load("pinball/9.png");
+	score_text = App->textures->Load("pinball/score.png");
+	balls_text = App->textures->Load("pinball/balls.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	target_fx = App->audio->LoadFx("pinball/target.wav");
 	
@@ -156,7 +159,7 @@ update_status ModuleMainScene::Update()
 	{
 		for (int i = 0; i < FLIPPER_MAX; i+=2)
 		{
-			flippers[i]->body->ApplyAngularImpulse(100, true);
+			flippers[i]->body->ApplyAngularImpulse(50, true);
 		}
 	}
 
@@ -164,7 +167,7 @@ update_status ModuleMainScene::Update()
 	{
 		for (int i = 1; i < FLIPPER_MAX; i += 2)
 		{
-			flippers[i]->body->ApplyAngularImpulse(-100, true);
+			flippers[i]->body->ApplyAngularImpulse(-50, true);
 		}
 	}
 
@@ -199,11 +202,17 @@ update_status ModuleMainScene::Update()
 		App->renderer->Blit(flippers_texture[i], METERS_TO_PIXELS(flippers[i]->body->GetPosition().x), METERS_TO_PIXELS(flippers[i]->body->GetPosition().y), NULL, 1.0F, flippers[i]->GetRotation(), PIXEL_TO_METERS(10), PIXEL_TO_METERS(10));
 	}
 
+	//Draw SCORE
 	for (int i = 0; i < 9; i++)
 	{
-		App->renderer->Blit(score_texture[score_print[i]], scoreX+=offsetScoreX, -55, NULL);
+		App->renderer->Blit(score_texture[score_print[i]], scoreX+=offsetScoreX, SCREEN_HEIGHT-35, NULL);
 	}
-	scoreX = 0;
+	scoreX = -8;
+	App->renderer->Blit(score_text, 10, SCREEN_HEIGHT - 55, NULL);
+
+	//DRAW NBALLS
+	App->renderer->Blit(score_texture[nBalls], SCREEN_WIDTH - 25, SCREEN_HEIGHT - 35, NULL);
+	App->renderer->Blit(balls_text, SCREEN_WIDTH - 70, SCREEN_HEIGHT - 55, NULL);
 
 	return UPDATE_CONTINUE;
 }
@@ -238,3 +247,4 @@ void ModuleMainScene::UpdateScore()
 	score_print[1] = score / 10000000 % 10;
 	score_print[0] = score / 100000000 % 10;
 }
+

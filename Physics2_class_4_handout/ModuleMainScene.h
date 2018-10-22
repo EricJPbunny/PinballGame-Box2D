@@ -41,13 +41,16 @@ public:
 	SDL_Texture* board_texture = nullptr;
 	SDL_Texture* flippers_texture[FLIPPER_MAX];
 	SDL_Texture* ball_texture = nullptr;
+	SDL_Texture* score_text = nullptr;
+	SDL_Texture* balls_text = nullptr;
 	SDL_Texture* score_texture[10];
 
-	int scoreX = 20;
+	int scoreX = 0;
 	int offsetScoreX = 17;
 
 	int score_print[10];
 	int score;
+	int nBalls;
 
 	uint bonus_fx;
 	uint target_fx;
