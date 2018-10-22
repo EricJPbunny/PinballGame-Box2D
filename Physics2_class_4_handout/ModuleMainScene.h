@@ -47,6 +47,9 @@ public:
 	SDL_Texture* score_text = nullptr;
 	SDL_Texture* balls_text = nullptr;
 	SDL_Texture* score_texture[10];
+	SDL_Texture* spring_texture;
+
+	SDL_Rect* blackBG;
 
 	int scoreX = 0;
 	int offsetScoreX = 17;

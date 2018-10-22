@@ -12,7 +12,7 @@
 #define METERS_TO_PIXELS(m) ((int) floor(PIXELS_PER_METER * m))
 #define PIXEL_TO_METERS(p)  ((float) METER_PER_PIXEL * p)
 
-enum type {NONE, BUMPER, BONUS, TARGET, DEATHZONE };
+enum type {NONE, BUMPER, BONUS, TARGET };
 
 // Small class to return to other modules to track position and rotation of physics bodies
 class PhysBody
@@ -54,7 +54,6 @@ public:
 	PhysBody* CreateFlipper(int id, int x, int y, int* points, int size, int anchorX, int anchorY, float motorspeed, float motormaxspeed, float lowerAngle, float upperAngle, b2Body* bodyA);
 	PhysBody* CreateLauncher(int x,  int y, int width, int height, int frequency, float damping);
 	PhysBody* CreateBumper(int x, int y, int radius);
-	PhysBody* CreateDeathZone(int x, int y, int width, int height);
 
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);

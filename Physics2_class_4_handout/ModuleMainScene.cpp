@@ -68,6 +68,7 @@ bool ModuleMainScene::Start()
 	score_texture[7] = App->textures->Load("pinball/7.png");
 	score_texture[8] = App->textures->Load("pinball/8.png");
 	score_texture[9] = App->textures->Load("pinball/9.png");
+	spring_texture = App->textures->Load("pinball/Spring.png");
 	score_text = App->textures->Load("pinball/score.png");
 	balls_text = App->textures->Load("pinball/balls.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
@@ -123,12 +124,15 @@ bool ModuleMainScene::Start()
 	targets[5] = App->physics->CreateTarget(62, 160, 5, 20, 0.40f);
 	targets[6] = App->physics->CreateTarget(231, 34, 5, 20, 0.75f);
 	targets[7] = App->physics->CreateTarget(340, 34, 5, 20, -0.75f);
-
-	//Create deathzone
-	death_zone = App->physics->CreateDeathZone(177, 728, 120, 20);
+	blackBG = new SDL_Rect;
+	blackBG->h = 60;
+	blackBG->w = 378;
+	blackBG->x = 0;
+	blackBG->y = 720;
 
 	//Create firstball
 	SpawnBall();
+
 	return ret;
 }
 
@@ -147,8 +151,7 @@ update_status ModuleMainScene::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 8));
-		balls.getLast()->data->listener = this;
+		SpawnBall();
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
@@ -181,7 +184,16 @@ update_status ModuleMainScene::Update()
 	{
 		launcher_top->body->ApplyForce({ 0, 10000 }, { PIXEL_TO_METERS(357), PIXEL_TO_METERS(636) }, true);
 	}
+	//Check if the ball is off limits
 
+	if (ball->data->body->GetPosition().y > PIXEL_TO_METERS(700))
+	{
+		ball->data->body->SetTransform({ PIXEL_TO_METERS(357), PIXEL_TO_METERS(599) }, 0);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
+	{
+		LOG("Ball is")
+	}
 	//Update Score
 	UpdateScore();
 
@@ -207,7 +219,10 @@ update_status ModuleMainScene::Update()
 	{
 		App->renderer->Blit(flippers_texture[i], METERS_TO_PIXELS(flippers[i]->body->GetPosition().x), METERS_TO_PIXELS(flippers[i]->body->GetPosition().y), NULL, 1.0F, flippers[i]->GetRotation(), PIXEL_TO_METERS(10), PIXEL_TO_METERS(10));
 	}
-
+	App->renderer->Blit(spring_texture, METERS_TO_PIXELS(launcher_top->body->GetPosition().x)-5, METERS_TO_PIXELS(launcher_top->body->GetPosition().y), NULL, 1.0f);
+	//Score Layer
+	SDL_SetRenderDrawColor(App->renderer->renderer, 0, 0, 0,255);
+	SDL_RenderFillRect(App->renderer->renderer, blackBG);
 	//Draw SCORE
 	for (int i = 0; i < 9; i++)
 	{
@@ -219,6 +234,7 @@ update_status ModuleMainScene::Update()
 	//DRAW NBALLS
 	App->renderer->Blit(score_texture[nBalls], SCREEN_WIDTH - 25, SCREEN_HEIGHT - 35, NULL);
 	App->renderer->Blit(balls_text, SCREEN_WIDTH - 70, SCREEN_HEIGHT - 55, NULL);
+	
 
 	return UPDATE_CONTINUE;
 }
@@ -237,18 +253,6 @@ void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* c
 		score += 100; break;
 	case BONUS: App->audio->PlayFx(bonus_fx); 
 		score += 100; break;
-	case DEATHZONE: 
-		nBalls-= 1;
-		if (nBalls == 0)
-		{
-			game_over = true;
-		}
-		else {
-			//p2List_item<PhysBody*> ball = bodyA;
-			//balls.del(&ball);
-			//SpawnBall();
-		}
-		break;
 	default: break;
 	}
 }
