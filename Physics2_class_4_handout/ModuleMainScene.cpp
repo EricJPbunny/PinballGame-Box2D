@@ -16,6 +16,7 @@ ModuleMainScene::ModuleMainScene(Application* app, bool start_enabled) : Module(
 		flippers[i] = nullptr;
 		flipper_joints[i] = nullptr;
 		flippers_texture[i] = nullptr;
+		flipper_anchors[i] = nullptr;
 	}
 	
 	for (int i = 0; i < 2; i++)
@@ -64,12 +65,18 @@ bool ModuleMainScene::Start()
 	board_body.add(App->physics->CreateChain(0, 0, Mid_Left_Thingy, 30));
 
 	//Creating flippers
-	flippers[BOTTOMRIGHT] = App->physics->CreateFlipper(BOTTOMRIGHT, 184, 666, FlipperR, 20, 232, 676, -10.0f, 10.0f, -0.15f, 0.15f, board_body.getFirst()->data->body);
-	flippers[BOTTOMLEFT] = App->physics->CreateFlipper(BOTTOMLEFT, 112, 666, FlipperL, 20, 119, 676, 10.0f, 10.0f, -0.15f, 0.15f, board_body.getFirst()->data->body);
-	flippers[LEFT] = App->physics->CreateFlipper(LEFT, 65, 323, FlipperL2, 16, 69, 333, 10.0f, 10.0f, 0.0f, 0.40f, board_body.getFirst()->data->body);
-	flippers[RIGHT] = App->physics->CreateFlipper(RIGHT, 303, 408, FlipperR2, 18, 338, 416, -10.0f, 10.0f, -0.40f, 0.0f, board_body.getFirst()->data->body);
-	flippers[TOPRIGHT] = App->physics->CreateFlipper(TOPRIGHT, 292, 142, FlipperR2, 18, 324, 149, -10.0f, 10.0f, -0.21f, 0.15f, board_body.getFirst()->data->body);
-	flippers[TOPLEFT] = App->physics->CreateFlipper(TOPLEFT, 239, 142, FlipperL2, 16, 244, 149, 10.0f, 10.0f, -0.15f, 0.21f, board_body.getFirst()->data->body);
+	flipper_anchors[BOTTOMRIGHT] = App->physics->CreateCircle(231, 673, 6);
+	flippers[BOTTOMRIGHT] = App->physics->CreateFlipper(BOTTOMRIGHT, 184, 666, FlipperR, 20, 42, 11, -20.0f, 20.0f, -0.15f, 0.15f, flipper_anchors[BOTTOMRIGHT]->body);
+	flipper_anchors[BOTTOMLEFT] =  App->physics->CreateCircle(120, 673, 6);
+	flippers[BOTTOMLEFT] = App->physics->CreateFlipper(BOTTOMLEFT, 112, 666, FlipperL, 20, 11, 11, 20.0f, 20.0f, -0.15f, 0.15f, flipper_anchors[BOTTOMLEFT]->body);
+	flipper_anchors[LEFT] = App->physics->CreateCircle(69, 332, 6);
+	flippers[LEFT] = App->physics->CreateFlipper(LEFT, 62, 325, FlipperL2, 16, 9, 8, 20.0f, 20.0f, 0.0f, 0.40f, flipper_anchors[LEFT]->body);
+	flipper_anchors[RIGHT] = App->physics->CreateCircle(339, 416, 6);
+	flippers[RIGHT] = App->physics->CreateFlipper(RIGHT, 303, 408, FlipperR2, 18, 30, 8, -20.0f, 20.0f, -0.40f, 0.0f, flipper_anchors[RIGHT]->body);
+	flipper_anchors[TOPRIGHT] = App->physics->CreateCircle(325, 148, 6);
+	flippers[TOPRIGHT] = App->physics->CreateFlipper(TOPRIGHT, 292, 142, FlipperR2, 18, 30, 8, -20.0f, 20.0f, -0.21f, 0.15f, flipper_anchors[TOPRIGHT]->body);
+	flipper_anchors[TOPLEFT] = App->physics->CreateCircle(244, 148, 6);
+	flippers[TOPLEFT] = App->physics->CreateFlipper(TOPLEFT, 239, 142, FlipperL2, 16, 9, 8, 20.0f, 20.0f, -0.15f, 0.21f, flipper_anchors[TOPLEFT]->body);
 
 	//Create launcher
 	launcher_base = App->physics->CreateRectangle(354, 710, 16, 16);

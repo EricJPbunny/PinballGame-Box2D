@@ -187,16 +187,17 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, b2Body
 	return pbody;
 }
 
-PhysBody * ModulePhysics::CreateFlipper(int id, int x, int y, int * points, int size, int anchorX, int anchorY, float motorspeed, float motormaxspeed, float lowerAngle, float upperAngle, b2Body * bodyB)
+PhysBody * ModulePhysics::CreateFlipper(int id, int x, int y, int * points, int size, int anchorX, int anchorY, float motorspeed, float motormaxspeed, float lowerAngle, float upperAngle, b2Body * bodyA)
 {
 	PhysBody* flipper = CreateChain(x, y, points, size, b2_dynamicBody);
+	bodyA->SetType(b2_staticBody);
 
 	b2BodyDef bd;
 	bd.type = b2_dynamicBody;
 	b2Body* b = App->physics->world->CreateBody(&bd);
 
 	b2PolygonShape dshape;
-	dshape.SetAsBox(PIXEL_TO_METERS(64)*0.5f, PIXEL_TO_METERS(35)*0.5f);
+	dshape.SetAsBox(PIXEL_TO_METERS(50), PIXEL_TO_METERS(25));
 
 	b2FixtureDef dummyfix;
 	dummyfix.shape = &dshape;
@@ -210,7 +211,7 @@ PhysBody * ModulePhysics::CreateFlipper(int id, int x, int y, int * points, int 
 	flipper->body->SetMassData(massdata);
 
 	b2RevoluteJointDef def;
-	def.bodyA = bodyB;
+	def.bodyA = bodyA;
 	def.bodyB = flipper->body;
 	def.enableLimit = true;
 	def.lowerAngle = lowerAngle * b2_pi;
@@ -218,7 +219,8 @@ PhysBody * ModulePhysics::CreateFlipper(int id, int x, int y, int * points, int 
 	def.enableMotor = true;
 	def.maxMotorTorque = motormaxspeed;
 	def.motorSpeed = motorspeed;
-	def.Initialize(def.bodyA, def.bodyB, { PIXEL_TO_METERS(anchorX), PIXEL_TO_METERS(anchorY) });
+	def.localAnchorA = { 0,0 };
+	def.localAnchorB = { PIXEL_TO_METERS(anchorX), PIXEL_TO_METERS(anchorY) };
 	App->scene_main->flipper_joints[id] = (b2RevoluteJoint*)App->physics->world->CreateJoint(&def);
 	return flipper;
 }

@@ -28,6 +28,7 @@ public:
 	p2List<PhysBody*> board_body;
 	PhysBody* right_wall = nullptr;
 	PhysBody* flippers[FLIPPER_MAX];
+	PhysBody* flipper_anchors[FLIPPER_MAX];
 	PhysBody* bumpers[2];
 	PhysBody* bonus[6];
 	PhysBody* targets[8];
