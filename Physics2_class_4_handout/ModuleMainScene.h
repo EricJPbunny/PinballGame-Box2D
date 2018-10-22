@@ -22,6 +22,7 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* contact);
+	void UpdateScore();
 
 public:
 	p2List<PhysBody*> balls;
@@ -40,6 +41,13 @@ public:
 	SDL_Texture* board_texture = nullptr;
 	SDL_Texture* flippers_texture[FLIPPER_MAX];
 	SDL_Texture* ball_texture = nullptr;
+	SDL_Texture* score_texture[10];
+
+	int scoreX = 20;
+	int offsetScoreX = 17;
+
+	int score_print[10];
+	int score;
 
 	uint bonus_fx;
 	uint target_fx;

@@ -19,6 +19,12 @@ ModuleMainScene::ModuleMainScene(Application* app, bool start_enabled) : Module(
 		flipper_anchors[i] = nullptr;
 	}
 	
+	for (int i = 0; i < 9; i++)
+	{
+		score_texture[i] = nullptr;
+		score_print[i] = 0;
+	}
+
 	for (int i = 0; i < 2; i++)
 	{
 		bumpers[i] = nullptr;
@@ -41,7 +47,8 @@ bool ModuleMainScene::Start()
 	bool ret = true;
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
-
+	App->renderer->camera.y = 60;
+	score = 0;
 	//Load Textures 
 	board_texture = App->textures->Load("pinball/Pinball_GameBoard.png");
 	flippers_texture[BOTTOMRIGHT] = App->textures->Load("pinball/FlipperR.png");
@@ -51,6 +58,16 @@ bool ModuleMainScene::Start()
 	flippers_texture[TOPLEFT] = App->textures->Load("pinball/FlipperL2.png");
 	flippers_texture[TOPRIGHT] = App->textures->Load("pinball/FlipperR2.png");
 	ball_texture = App->textures->Load("pinball/Pinball_Ball.png");
+	score_texture[0] = App->textures->Load("pinball/0.png");
+	score_texture[1] = App->textures->Load("pinball/1.png");
+	score_texture[2] = App->textures->Load("pinball/2.png");
+	score_texture[3] = App->textures->Load("pinball/3.png");
+	score_texture[4] = App->textures->Load("pinball/4.png");
+	score_texture[5] = App->textures->Load("pinball/5.png");
+	score_texture[6] = App->textures->Load("pinball/6.png");
+	score_texture[7] = App->textures->Load("pinball/7.png");
+	score_texture[8] = App->textures->Load("pinball/8.png");
+	score_texture[9] = App->textures->Load("pinball/9.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	target_fx = App->audio->LoadFx("pinball/target.wav");
 	
@@ -157,6 +174,8 @@ update_status ModuleMainScene::Update()
 		launcher_top->body->ApplyForce({ 0, 10000 }, { PIXEL_TO_METERS(357), PIXEL_TO_METERS(636) }, true);
 	}
 
+	//Update Score
+	UpdateScore();
 
 	// Prepare for raycast ------------------------------------------------------
 
@@ -181,6 +200,12 @@ update_status ModuleMainScene::Update()
 		App->renderer->Blit(flippers_texture[i], METERS_TO_PIXELS(flippers[i]->body->GetPosition().x), METERS_TO_PIXELS(flippers[i]->body->GetPosition().y), NULL, 1.0F, flippers[i]->GetRotation(), PIXEL_TO_METERS(10), PIXEL_TO_METERS(10));
 	}
 
+	for (int i = 0; i < 9; i++)
+	{
+		App->renderer->Blit(score_texture[score_print[i]], scoreX+=offsetScoreX, -55, NULL);
+	}
+	scoreX = 0;
+
 	return UPDATE_CONTINUE;
 }
 
@@ -192,9 +217,25 @@ void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* c
 	case BUMPER: 
 		contact->GetWorldManifold(&worldManifold);
 		bodyA->body->ApplyForce(100*worldManifold.normal, worldManifold.points[0], true);
+		score += 100;
 		break;
-	case TARGET: App->audio->PlayFx(target_fx); break;
-	case BONUS: App->audio->PlayFx(bonus_fx); break;
+	case TARGET: App->audio->PlayFx(target_fx);
+		score += 100; break;
+	case BONUS: App->audio->PlayFx(bonus_fx); 
+		score += 100; break;
 	default: break;
 	}
+}
+
+void ModuleMainScene::UpdateScore()
+{
+	score_print[8] = score % 10;
+	score_print[7] = score / 10 % 10;
+	score_print[6] = score / 100 % 10;
+	score_print[5] = score / 1000 % 10;
+	score_print[4] = score / 10000 % 10;
+	score_print[3] = score / 100000 % 10;
+	score_print[2] = score / 1000000 % 10;
+	score_print[1] = score / 10000000 % 10;
+	score_print[0] = score / 100000000 % 10;
 }
