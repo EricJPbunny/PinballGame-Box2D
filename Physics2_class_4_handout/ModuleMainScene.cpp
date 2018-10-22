@@ -47,7 +47,6 @@ bool ModuleMainScene::Start()
 	bool ret = true;
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
-	App->renderer->camera.y = 60;
 	score = 0;
 	//Load Textures 
 	board_texture = App->textures->Load("pinball/Pinball_GameBoard.png");
@@ -216,7 +215,7 @@ void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* c
 	{
 	case BUMPER: 
 		contact->GetWorldManifold(&worldManifold);
-		bodyA->body->ApplyForce(100*worldManifold.normal, worldManifold.points[0], true);
+		bodyA->body->ApplyForceToCenter(100*worldManifold.normal, true);
 		score += 100;
 		break;
 	case TARGET: App->audio->PlayFx(target_fx);
