@@ -123,6 +123,12 @@ bool ModuleMainScene::Start()
 	targets[5] = App->physics->CreateTarget(62, 160, 5, 20, 0.40f);
 	targets[6] = App->physics->CreateTarget(231, 34, 5, 20, 0.75f);
 	targets[7] = App->physics->CreateTarget(340, 34, 5, 20, -0.75f);
+
+	//Create deathzone
+	death_zone = App->physics->CreateDeathZone(177, 728, 120, 20);
+
+	//Create firstball
+	SpawnBall();
 	return ret;
 }
 
@@ -231,6 +237,18 @@ void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* c
 		score += 100; break;
 	case BONUS: App->audio->PlayFx(bonus_fx); 
 		score += 100; break;
+	case DEATHZONE: 
+		nBalls-= 1;
+		if (nBalls == 0)
+		{
+			game_over = true;
+		}
+		else {
+			//p2List_item<PhysBody*> ball = bodyA;
+			//balls.del(&ball);
+			//SpawnBall();
+		}
+		break;
 	default: break;
 	}
 }
@@ -247,4 +265,11 @@ void ModuleMainScene::UpdateScore()
 	score_print[1] = score / 10000000 % 10;
 	score_print[0] = score / 100000000 % 10;
 }
+
+void ModuleMainScene::SpawnBall()
+{
+	balls.add(App->physics->CreateCircle(357, 599, 8));
+	balls.getLast()->data->listener = this;
+}
+
 

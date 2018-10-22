@@ -4,7 +4,7 @@ const int length = 106;
 int numberOfBoardElements = 5;
 
 // Pivot 0, 0
-int Pinball_GameBoard[108] = {
+int Pinball_GameBoard[112] = {
 	133, 6,
 	49, 6,
 	12, 42,
@@ -18,7 +18,9 @@ int Pinball_GameBoard[108] = {
 	42, 675,
 	104, 708,
 	115, 720,
-	238, 720,
+	115, 749,
+	238, 749,
+	238, 721,
 	251, 708,
 	337, 663,
 	337, 530,

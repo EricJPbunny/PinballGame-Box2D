@@ -23,6 +23,8 @@ public:
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* contact);
 	void UpdateScore();
+	void SpawnBall();
+	void ReSpawnBall();
 
 public:
 	p2List<PhysBody*> balls;
@@ -35,6 +37,7 @@ public:
 	PhysBody* targets[8];
 	PhysBody* launcher_top = nullptr;
 	PhysBody* launcher_base = nullptr;
+	PhysBody* death_zone = nullptr;
 	b2RevoluteJoint* flipper_joints[FLIPPER_MAX];
 	b2DistanceJoint* launcher_joint = nullptr;
 
@@ -51,6 +54,8 @@ public:
 	int score_print[10];
 	int score;
 	int nBalls;
+
+	bool game_over = false;
 
 	uint bonus_fx;
 	uint target_fx;

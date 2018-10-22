@@ -245,6 +245,13 @@ PhysBody * ModulePhysics::CreateBumper(int x, int y, int radius)
 	return bumper;
 }
 
+PhysBody * ModulePhysics::CreateDeathZone(int x, int y, int width, int height)
+{
+	PhysBody* deathzone = CreateRectangleSensor(x, y, width, height);
+	deathzone->type = DEATHZONE;
+	return deathzone;
+}
+
 // 
 update_status ModulePhysics::PostUpdate()
 {

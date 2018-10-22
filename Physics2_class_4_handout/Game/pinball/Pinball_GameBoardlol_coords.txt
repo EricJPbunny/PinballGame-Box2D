@@ -1,19 +1,9 @@
 // Pivot 0, 0
-int Pinball_GameBoardlol[12] = {
-	120, 673,
-	231, 673,
-	69, 332,
-	339, 416,
-	244, 148,
-	325, 148
+int Pinball_GameBoardlol[2] = {
+	177, 728
 };
 
 // Pivot 0.000000, 0.000000
-float Pinball_GameBoardlol[12] = {
-	0.317460f, 0.934722f,
-	0.611111f, 0.934722f,
-	0.182540f, 0.461111f,
-	0.896825f, 0.577778f,
-	0.645503f, 0.205556f,
-	0.859788f, 0.205556f
+float Pinball_GameBoardlol[2] = {
+	0.468254f, 1.011111f
 };
