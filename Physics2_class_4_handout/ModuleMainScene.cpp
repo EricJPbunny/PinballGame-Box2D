@@ -237,7 +237,7 @@ void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* c
 	{
 	case BUMPER: 
 		contact->GetWorldManifold(&worldManifold);
-		bodyA->body->ApplyForceToCenter(100*worldManifold.normal, true);
+		//bodyA->body->ApplyForceToCenter(100*worldManifold.normal, true);
 		score += 100;
 		break;
 	case TARGET: App->audio->PlayFx(target_fx);
