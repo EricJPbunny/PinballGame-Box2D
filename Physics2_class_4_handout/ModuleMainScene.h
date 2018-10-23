@@ -19,12 +19,17 @@ public:
 	~ModuleMainScene();
 
 	bool Start();
+	void LoadTextures();
+	void CreateBoard();
 	update_status Update();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* contact);
 	void UpdateScore();
+	void UpdateInputs();
+	void CheckBallLimits();
+	void Draw();
+	void UpdateGameOver();
 	void SpawnBall();
-	void ReSpawnBall();
 
 public:
 	p2List<PhysBody*> balls;
@@ -37,7 +42,6 @@ public:
 	PhysBody* targets[8];
 	PhysBody* launcher_top = nullptr;
 	PhysBody* launcher_base = nullptr;
-	PhysBody* death_zone = nullptr;
 	b2RevoluteJoint* flipper_joints[FLIPPER_MAX];
 	b2DistanceJoint* launcher_joint = nullptr;
 
@@ -55,7 +59,7 @@ public:
 	int offsetScoreX = 17;
 
 	int score_print[10];
-	int score;
+	int score, lastscore, highscore;
 	int nBalls;
 
 	bool game_over = false;
