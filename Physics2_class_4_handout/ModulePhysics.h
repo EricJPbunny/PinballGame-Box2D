@@ -33,6 +33,14 @@ public:
 	Module* listener;
 };
 
+struct Target
+{
+	PhysBody* pbody;
+	bool on;
+	SDL_Texture* texture_on;
+	SDL_Texture* texture_off;
+};
+
 // Module --------------------------------------
 class ModulePhysics : public Module, public b2ContactListener
 {
@@ -48,7 +56,7 @@ public:
 	PhysBody* CreateCircle(int x, int y, int radius);
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
 	PhysBody* CreateBonus(int x, int y, int width, int height);
-	PhysBody* CreateTarget(int x, int y, int width, int height, float32 angle);
+	Target* CreateTarget(int x, int y, int width, int height, float32 angle);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, int* points, int size, b2BodyType = b2_staticBody);
 	PhysBody* CreateFlipper(int id, int x, int y, int* points, int size, int anchorX, int anchorY, float motorspeed, float motormaxspeed, float lowerAngle, float upperAngle, b2Body* bodyA);

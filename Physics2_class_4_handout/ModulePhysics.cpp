@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleRender.h"
+#include "ModuleTextures.h"
 #include "ModulePhysics.h"
 #include "ModuleMainScene.h"
 #include "p2Point.h"
@@ -116,11 +117,16 @@ PhysBody * ModulePhysics::CreateBonus(int x, int y, int width, int height)
 	return bonus;
 }
 
-PhysBody * ModulePhysics::CreateTarget(int x, int y, int width, int height, float32 angle)
+Target * ModulePhysics::CreateTarget(int x, int y, int width, int height, float32 angle)
 {
-	PhysBody* target = CreateRectangleSensor(x, y, width, height);
-	target->type = TARGET;
-	target->body->SetTransform(target->body->GetPosition(), angle);
+	Target* target = new Target();
+	target->on = false;
+	target->texture_off = App->textures->Load("pinball/targettextureoff.png");
+	target->texture_on = App->textures->Load("pinball/targettextureon.png");
+	target->pbody = CreateRectangleSensor(x, y, width, height);
+	target->pbody->type = TARGET;
+	target->pbody->body->SetTransform(target->pbody->body->GetPosition(), angle);
+	
 	return target;
 }
 

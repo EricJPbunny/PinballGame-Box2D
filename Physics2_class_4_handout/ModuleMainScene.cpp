@@ -155,51 +155,51 @@ bool ModuleMainScene::CleanUp()
 	LOG("Unloading Main scene");
 
 	//Unloading flippers
-	for (int i = FLIPPER_MAX; i > 0; i--)
-	{
-		App->physics->world->DestroyJoint(flipper_joints[i]);
-		flipper_joints[i] = nullptr;
-		App->physics->world->DestroyBody(flippers[i]->body);
-		flippers[i] = nullptr;
-		App->textures->Unload(flippers_texture[i]);
-		flippers_texture[i] = nullptr;
-		App->physics->world->DestroyBody(flipper_anchors[i]->body);
-		flipper_anchors[i] = nullptr;
-	}
+	//for (int i = FLIPPER_MAX; i > 0; i--)
+	//{
+	//	App->physics->world->DestroyJoint(flipper_joints[i]);
+	//	flipper_joints[i] = nullptr;
+	//	App->physics->world->DestroyBody(flippers[i]->body);
+	//	flippers[i] = nullptr;
+	//	App->textures->Unload(flippers_texture[i]);
+	//	flippers_texture[i] = nullptr;
+	//	App->physics->world->DestroyBody(flipper_anchors[i]->body);
+	//	flipper_anchors[i] = nullptr;
+	//}
 
-	//Unloading launcher
-	/*App->physics->world->DestroyJoint(launcher_joint);
-	App->physics->world->DestroyBody(launcher_top->body);
-	App->physics->world->DestroyBody(launcher_base->body);*/
+	////Unloading launcher
+	//App->physics->world->DestroyJoint(launcher_joint);
+	//App->physics->world->DestroyBody(launcher_top->body);
+	//App->physics->world->DestroyBody(launcher_base->body);
 
-	//Unloading Score
-	for (int i = 9; i > 0; i--)
-	{
-		App->textures->Unload(score_texture[i]);
-		score_texture[i] = nullptr;
-		score_print[i] = 0;
-	}
+	////Unloading Score
+	//for (int i = 9; i > 0; i--)
+	//{
+	//	App->textures->Unload(score_texture[i]);
+	//	score_texture[i] = nullptr;
+	//	score_print[i] = 0;
+	//}
 
-	//Unloading Bumpers
-	for (int i = 2; i > 0; i--)
-	{
-		App->physics->world->DestroyBody(bumpers[i]->body);
-		bumpers[i] = nullptr;
-	}
+	////Unloading Bumpers
+	//for (int i = 2; i > 0; i--)
+	//{
+	//	App->physics->world->DestroyBody(bumpers[i]->body);
+	//	bumpers[i] = nullptr;
+	//}
 
-	//Unloading Bonus
-	for (int i = 6; i > 0; i--)
-	{
-		App->physics->world->DestroyBody(bonus[i]->body);
-		bonus[i] = nullptr;
-	}
+	////Unloading Bonus
+	//for (int i = 6; i > 0; i--)
+	//{
+	//	App->physics->world->DestroyBody(bonus[i]->body);
+	//	bonus[i] = nullptr;
+	//}
 
-	//Unloading Targets
-	for (int i = 8; i > 0; i--)
-	{
-		App->physics->world->DestroyBody(targets[i]->body);
-		targets[i] = nullptr;
-	}
+	////Unloading Targets
+	//for (int i = 8; i > 0; i--)
+	//{
+	//	App->physics->world->DestroyBody(targets[i]->pbody->body);
+	//	targets[i] = nullptr;
+	//}
 
 	return true;
 }
@@ -265,7 +265,8 @@ void ModuleMainScene::UpdateInputs()
 {
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		SpawnBall();
+		balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 8));
+		balls.getLast()->data->listener = this;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)

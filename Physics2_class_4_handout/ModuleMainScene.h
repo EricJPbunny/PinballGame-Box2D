@@ -8,6 +8,7 @@ class PhysBody;
 class b2RevoluteJoint;
 class b2DistanceJoint;
 class b2Contact;
+struct Target;
 
 enum FLIPPER {BOTTOMRIGHT, BOTTOMLEFT, RIGHT, LEFT, TOPRIGHT, TOPLEFT, FLIPPER_MAX};
 
@@ -39,7 +40,7 @@ public:
 	PhysBody* flipper_anchors[FLIPPER_MAX];
 	PhysBody* bumpers[2];
 	PhysBody* bonus[6];
-	PhysBody* targets[8];
+	Target* targets[8];
 	PhysBody* launcher_top = nullptr;
 	PhysBody* launcher_base = nullptr;
 	b2RevoluteJoint* flipper_joints[FLIPPER_MAX];
