@@ -52,8 +52,10 @@ public:
 	SDL_Texture* balls_text = nullptr;
 	SDL_Texture* score_texture[10];
 	SDL_Texture* spring_texture;
+	SDL_Texture* game_over_texture = nullptr;
 
-	SDL_Rect* blackBG;
+	SDL_Rect* scoreBG;
+	SDL_Rect* gameoverBG;
 
 	int scoreX = 0;
 	int offsetScoreX = 17;

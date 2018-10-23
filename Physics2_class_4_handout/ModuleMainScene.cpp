@@ -89,6 +89,7 @@ void ModuleMainScene::LoadTextures()
 	spring_texture = App->textures->Load("pinball/Spring.png");
 	score_text = App->textures->Load("pinball/score.png");
 	balls_text = App->textures->Load("pinball/balls.png");
+	game_over_texture = App->textures->Load("pinball/gameover.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	target_fx = App->audio->LoadFx("pinball/target.wav");
 }
@@ -144,11 +145,8 @@ void ModuleMainScene::CreateBoard()
 	targets[5] = App->physics->CreateTarget(62, 160, 5, 20, 0.40f);
 	targets[6] = App->physics->CreateTarget(231, 34, 5, 20, 0.75f);
 	targets[7] = App->physics->CreateTarget(340, 34, 5, 20, -0.75f);
-	blackBG = new SDL_Rect();
-	blackBG->h = 60;
-	blackBG->w = 378;
-	blackBG->x = 0;
-	blackBG->y = 720;
+	scoreBG = new SDL_Rect({0, 720, 378, 60});
+	gameoverBG = new SDL_Rect({0, 0, SCREEN_WIDTH, SCREEN_HEIGHT});
 }
 
 // Load assets
@@ -343,7 +341,7 @@ void ModuleMainScene::Draw()
 
 	//Score Layer
 	SDL_SetRenderDrawColor(App->renderer->renderer, 0, 0, 0, 255);
-	SDL_RenderFillRect(App->renderer->renderer, blackBG);
+	SDL_RenderFillRect(App->renderer->renderer, scoreBG);
 
 	//Draw SCORE
 	for (int i = 0; i < 9; i++)
@@ -356,6 +354,14 @@ void ModuleMainScene::Draw()
 	//Draw Nballs
 	App->renderer->Blit(score_texture[nBalls], SCREEN_WIDTH - 25, SCREEN_HEIGHT - 35, NULL);
 	App->renderer->Blit(balls_text, SCREEN_WIDTH - 70, SCREEN_HEIGHT - 55, NULL);
+
+	if (game_over)
+	{
+		//Blit Game Over TEXT
+		SDL_SetRenderDrawColor(App->renderer->renderer, 0, 0, 0, 150);
+		SDL_RenderFillRect(App->renderer->renderer, gameoverBG);
+		App->renderer->Blit(game_over_texture, 40, SCREEN_HEIGHT / 2, NULL);
+	}
 }
 
 void ModuleMainScene::SpawnBall()
@@ -366,9 +372,6 @@ void ModuleMainScene::SpawnBall()
 
 void ModuleMainScene::UpdateGameOver()
 {
-	//Blit Game Over TEXT
-	//App->renderer->Blit();
-
 	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 	{
 		game_over = false;
