@@ -123,9 +123,9 @@ Target * ModulePhysics::CreateTarget(int x, int y, int width, int height, float3
 	target->on = false;
 	target->texture_off = App->textures->Load("pinball/targettextureoff.png");
 	target->texture_on = App->textures->Load("pinball/targettextureon.png");
-	target->pbody = CreateRectangleSensor(x, y, width, height);
-	target->pbody->type = TARGET;
-	target->pbody->body->SetTransform(target->pbody->body->GetPosition(), angle);
+	target = (Target*)CreateRectangleSensor(x, y, width, height);
+	target->type = TARGET;
+	target->body->SetTransform(target->body->GetPosition(), angle);
 	
 	return target;
 }
@@ -179,6 +179,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, b2Body
 
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
+	fixture.restitution = 0.85f;
 
 	b->CreateFixture(&fixture);
 
@@ -245,10 +246,7 @@ PhysBody * ModulePhysics::CreateLauncher(int x, int y, int width, int height, in
 
 PhysBody * ModulePhysics::CreateBumper(int x, int y, int radius)
 {
-	/*PhysBody* bumper = CreateCircle(x, y, radius);
-	bumper->body->SetType(b2_staticBody);
-	bumper->type = BUMPER;
-	return bumper;*/
+
 	b2BodyDef body;
 	body.type = b2_staticBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
@@ -262,7 +260,7 @@ PhysBody * ModulePhysics::CreateBumper(int x, int y, int radius)
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
 	fixture.friction = 0.0f;
-	fixture.restitution = 0.85f;
+	fixture.restitution = 0.75f;
 
 	b->CreateFixture(&fixture);
 	PhysBody* pbody = new PhysBody;

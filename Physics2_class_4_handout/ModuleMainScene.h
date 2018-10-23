@@ -31,6 +31,7 @@ public:
 	void Draw();
 	void UpdateGameOver();
 	void SpawnBall();
+	bool lights[8];
 
 public:
 	p2List<PhysBody*> balls;

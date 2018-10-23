@@ -33,9 +33,8 @@ public:
 	Module* listener;
 };
 
-struct Target
+struct Target:public PhysBody
 {
-	PhysBody* pbody;
 	bool on;
 	SDL_Texture* texture_on;
 	SDL_Texture* texture_off;
