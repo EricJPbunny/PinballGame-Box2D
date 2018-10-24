@@ -11,6 +11,7 @@ class b2Contact;
 struct Target;
 
 enum FLIPPER {BOTTOMRIGHT, BOTTOMLEFT, RIGHT, LEFT, TOPRIGHT, TOPLEFT, FLIPPER_MAX};
+enum SOUNDS {FLIPPER, BUMPER, BONUS, TARGET, LAUNCHER, GAMEOVER, START, SOUNDS_MAX};
 
 class ModuleMainScene :
 	public Module
@@ -59,6 +60,8 @@ public:
 	SDL_Rect* scoreBG;
 	SDL_Rect* gameoverBG;
 
+	uint sounds[SOUNDS::SOUNDS_MAX];
+
 	int scoreX = 0;
 	int offsetScoreX = 17;
 
@@ -67,8 +70,5 @@ public:
 	int nBalls;
 
 	bool game_over = false;
-
-	uint bonus_fx;
-	uint target_fx;
 };
 

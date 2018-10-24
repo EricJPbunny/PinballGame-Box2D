@@ -39,6 +39,11 @@ ModuleMainScene::ModuleMainScene(Application* app, bool start_enabled) : Module(
 	{
 		targets[i] = nullptr;
 	}
+
+	for (int i = 0; i < SOUNDS_MAX; i++)
+	{
+		sounds[i] = 0;
+	}
 }
 
 ModuleMainScene::~ModuleMainScene()
@@ -90,8 +95,13 @@ void ModuleMainScene::LoadTextures()
 	score_text = App->textures->Load("pinball/score.png");
 	balls_text = App->textures->Load("pinball/balls.png");
 	game_over_texture = App->textures->Load("pinball/gameover.png");
-	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
-	target_fx = App->audio->LoadFx("pinball/target.wav");
+
+	//LoadSfx and music
+	sounds[SOUNDS::BUMPER] = App->audio->LoadFx("pinball/bumper.wav");
+	sounds[SOUNDS::LAUNCHER] = App->audio->LoadFx("pinball/launcher.wav");
+	sounds[SOUNDS::FLIPPER] = App->audio->LoadFx("pinball/flipper.wav");
+	sounds[SOUNDS::BONUS] = App->audio->LoadFx("pinball/bonus.wav");
+	sounds[SOUNDS::TARGET] = App->audio->LoadFx("pinball/target.wav");
 }
 
 void ModuleMainScene::CreateBoard()
@@ -235,12 +245,12 @@ void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* c
 	b2WorldManifold worldManifold;
 	switch (bodyB->type)
 	{
-	case BUMPER: 
+	case TYPE::BUMPER: App->audio->PlayFx(sounds[SOUNDS::BUMPER]);
 		contact->GetWorldManifold(&worldManifold);
 		//bodyA->body->ApplyForceToCenter(100*worldManifold.normal, true);
 		score += 100;
 		break;
-	case TARGET: App->audio->PlayFx(target_fx);
+	case TYPE::TARGET: App->audio->PlayFx(sounds[SOUNDS::TARGET]);
 		Target* bTarget;
 		score += 100;
 		/*b2Vec2 aux;
@@ -253,7 +263,7 @@ void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* c
 		lights[index] = true;*/
 		
 		break;
-	case BONUS: App->audio->PlayFx(bonus_fx); 
+	case TYPE::BONUS: App->audio->PlayFx(sounds[SOUNDS::BONUS]); 
 		score += 100; break;
 	default: break;
 	}
@@ -295,6 +305,7 @@ void ModuleMainScene::UpdateInputs()
 		for (int i = 0; i < FLIPPER_MAX; i += 2)
 		{
 			flippers[i]->body->ApplyAngularImpulse(50, true);
+			App->audio->PlayFx(sounds[SOUNDS::FLIPPER]);
 		}
 	}
 
@@ -303,6 +314,7 @@ void ModuleMainScene::UpdateInputs()
 		for (int i = 1; i < FLIPPER_MAX; i += 2)
 		{
 			flippers[i]->body->ApplyAngularImpulse(-50, true);
+			App->audio->PlayFx(sounds[SOUNDS::FLIPPER]);
 		}
 	}
 

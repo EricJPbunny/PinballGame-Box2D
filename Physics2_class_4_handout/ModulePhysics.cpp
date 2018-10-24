@@ -113,7 +113,7 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
 PhysBody * ModulePhysics::CreateBonus(int x, int y, int width, int height)
 {
 	PhysBody* bonus = CreateRectangleSensor(x, y, width, height);
-	bonus->type = BONUS;
+	bonus->type = TYPE::BONUS;
 	return bonus;
 }
 
@@ -124,7 +124,7 @@ Target * ModulePhysics::CreateTarget(int x, int y, int width, int height, float3
 	target->texture_off = App->textures->Load("pinball/targettextureoff.png");
 	target->texture_on = App->textures->Load("pinball/targettextureon.png");
 	target = (Target*)CreateRectangleSensor(x, y, width, height);
-	target->type = TARGET;
+	target->type = TYPE::TARGET;
 	target->body->SetTransform(target->body->GetPosition(), angle);
 	
 	return target;
@@ -263,7 +263,7 @@ PhysBody * ModulePhysics::CreateBumper(int x, int y, int radius)
 
 	b->CreateFixture(&fixture);
 	PhysBody* pbody = new PhysBody;
-	pbody->type = BUMPER;
+	pbody->type = TYPE::BUMPER;
 	pbody->body = b;
 	b->SetUserData(pbody);
 	
