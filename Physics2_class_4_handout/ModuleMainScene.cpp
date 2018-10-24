@@ -243,14 +243,14 @@ void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* c
 	case TARGET: App->audio->PlayFx(target_fx);
 		Target* bTarget;
 		score += 100;
-		b2Vec2 aux;
-		aux = bodyB->body->GetPosition();
-		int index;
+		/*b2Vec2 aux;
+		aux = bodyB->body->GetPosition();*/
+		/*int index;
 		if (aux > {-1, -1})
 		{
 		
 		}
-		lights[index] = true;
+		lights[index] = true;*/
 		
 		break;
 	case BONUS: App->audio->PlayFx(bonus_fx); 
