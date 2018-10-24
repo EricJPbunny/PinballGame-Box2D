@@ -38,6 +38,7 @@ ModuleMainScene::ModuleMainScene(Application* app, bool start_enabled) : Module(
 	for (int i = 0; i < 8; i++)
 	{
 		targets[i] = nullptr;
+		light_position[i] = nullptr;
 	}
 
 	for (int i = 0; i < SOUNDS_MAX; i++)
@@ -91,6 +92,7 @@ void ModuleMainScene::LoadTextures()
 	score_texture[7] = App->textures->Load("pinball/7.png");
 	score_texture[8] = App->textures->Load("pinball/8.png");
 	score_texture[9] = App->textures->Load("pinball/9.png");
+	lighton_texture = App->textures->Load("pinball/LightOn.png");
 	spring_texture = App->textures->Load("pinball/Spring.png");
 	score_text = App->textures->Load("pinball/score.png");
 	balls_text = App->textures->Load("pinball/balls.png");
@@ -102,6 +104,7 @@ void ModuleMainScene::LoadTextures()
 	sounds[SOUNDS::FLIPPER] = App->audio->LoadFx("pinball/flipper.wav");
 	sounds[SOUNDS::BONUS] = App->audio->LoadFx("pinball/bonus.wav");
 	sounds[SOUNDS::TARGET] = App->audio->LoadFx("pinball/target.wav");
+	sounds[SOUNDS::BONUSMAX] = App->audio->LoadFx("pinball/bonusmax.wav");
 }
 
 void ModuleMainScene::CreateBoard()
@@ -155,6 +158,16 @@ void ModuleMainScene::CreateBoard()
 	targets[5] = App->physics->CreateTarget(62, 160, 5, 20, 0.40f);
 	targets[6] = App->physics->CreateTarget(231, 34, 5, 20, 0.75f);
 	targets[7] = App->physics->CreateTarget(340, 34, 5, 20, -0.75f);
+	//create points to lights
+	
+	light_position[0] = new b2Vec2({ 67, 380 });
+	light_position[1] = new b2Vec2({ 52, 269 });
+	light_position[2] = new b2Vec2({ 51, 234 });
+	light_position[3] = new b2Vec2({ 362, 343 });
+	light_position[4] = new b2Vec2({ 363, 201 });
+	light_position[5] = new b2Vec2({ 62, 160 });
+	light_position[6] = new b2Vec2({ 231, 34 });
+	light_position[7] = new b2Vec2({ 340, 34 });
 	scoreBG = new SDL_Rect({0, 720, 378, 60});
 	gameoverBG = new SDL_Rect({0, 0, SCREEN_WIDTH, SCREEN_HEIGHT});
 }
@@ -229,6 +242,11 @@ update_status ModuleMainScene::Update()
 		CheckBallLimits();
 		//Update Score
 		UpdateScore();
+
+		if (fullbonus)
+		{
+			TurnLightsOff();
+		}
 	}
 	else UpdateGameOver();
 
@@ -251,16 +269,26 @@ void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* c
 		score += 100;
 		break;
 	case TYPE::TARGET: App->audio->PlayFx(sounds[SOUNDS::TARGET]);
-		Target* bTarget;
+		Target* bTarget; 
 		score += 100;
-		/*b2Vec2 aux;
-		aux = bodyB->body->GetPosition();*/
-		/*int index;
-		if (aux > {-1, -1})
+		for (int i = 0; i < 8; i++)
 		{
-		
+			if (targets[i]->TBody == bodyB)
+			{
+				targets[i]->on = true;
+			}
+			if (targets[i]->on)
+			{
+				bonuscounter++;
+				if (bonuscounter == 8) {
+					App->audio->PlayFx(sounds[SOUNDS::BONUSMAX]);
+					score += score * 3;
+					fullbonus = true;
+					lightsofftimer = 200;
+				}
+			}
 		}
-		lights[index] = true;*/
+		bonuscounter = 0;
 		
 		break;
 	case TYPE::BONUS: App->audio->PlayFx(sounds[SOUNDS::BONUS]); 
@@ -305,7 +333,6 @@ void ModuleMainScene::UpdateInputs()
 		for (int i = 0; i < FLIPPER_MAX; i += 2)
 		{
 			flippers[i]->body->ApplyAngularImpulse(50, true);
-			App->audio->PlayFx(sounds[SOUNDS::FLIPPER]);
 		}
 	}
 
@@ -314,8 +341,11 @@ void ModuleMainScene::UpdateInputs()
 		for (int i = 1; i < FLIPPER_MAX; i += 2)
 		{
 			flippers[i]->body->ApplyAngularImpulse(-50, true);
-			App->audio->PlayFx(sounds[SOUNDS::FLIPPER]);
 		}
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN){
+		App->audio->PlayFx(sounds[SOUNDS::FLIPPER]);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
@@ -335,6 +365,10 @@ void ModuleMainScene::CheckBallLimits()
 		{
 			game_over = true;
 			ball->data->body->SetTransform({ PIXEL_TO_METERS(357), PIXEL_TO_METERS(599) }, 0);
+			for (int i = 0; i < 8; i++)
+			{
+				targets[i]->on = false;
+			}
 		}
 		else ball->data->body->SetTransform({ PIXEL_TO_METERS(357), PIXEL_TO_METERS(599) }, 0);
 
@@ -386,12 +420,38 @@ void ModuleMainScene::Draw()
 		SDL_RenderFillRect(App->renderer->renderer, gameoverBG);
 		App->renderer->Blit(game_over_texture, 40, SCREEN_HEIGHT / 2, NULL);
 	}
+	//Draw lights on
+	for (int i = 0; i < 8; ++i)
+	{
+		if (targets[i]->on == true)
+		{
+			App->renderer->Blit(lighton_texture , light_position[i]->x, light_position[i]->y, NULL);
+			/*if (targets[7]->on == true)
+			{
+				targets[i]->on = false;
+			}*/
+		}
+	}
+	
 }
 
 void ModuleMainScene::SpawnBall()
 {
 	balls.add(App->physics->CreateCircle(357, 599, 8));
 	balls.getLast()->data->listener = this;
+}
+
+void ModuleMainScene::TurnLightsOff()
+{
+	lightsofftimer--;
+	if (lightsofftimer == 0)
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			targets[i]->on = false;
+		}
+		fullbonus = false;
+	}
 }
 
 void ModuleMainScene::UpdateGameOver()

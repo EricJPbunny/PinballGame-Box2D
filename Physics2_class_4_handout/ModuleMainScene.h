@@ -9,9 +9,10 @@ class b2RevoluteJoint;
 class b2DistanceJoint;
 class b2Contact;
 struct Target;
+struct b2Vec2;
 
 enum FLIPPER {BOTTOMRIGHT, BOTTOMLEFT, RIGHT, LEFT, TOPRIGHT, TOPLEFT, FLIPPER_MAX};
-enum SOUNDS {FLIPPER, BUMPER, BONUS, TARGET, LAUNCHER, GAMEOVER, START, SOUNDS_MAX};
+enum SOUNDS {FLIPPER, BUMPER, BONUS, TARGET, LAUNCHER, GAMEOVER, START, BONUSMAX, SOUNDS_MAX};
 
 class ModuleMainScene :
 	public Module
@@ -32,7 +33,8 @@ public:
 	void Draw();
 	void UpdateGameOver();
 	void SpawnBall();
-	bool lights[8];
+	void TurnLightsOff();
+	
 
 public:
 	p2List<PhysBody*> balls;
@@ -47,6 +49,7 @@ public:
 	PhysBody* launcher_base = nullptr;
 	b2RevoluteJoint* flipper_joints[FLIPPER_MAX];
 	b2DistanceJoint* launcher_joint = nullptr;
+	b2Vec2* light_position[8];
 
 	SDL_Texture* board_texture = nullptr;
 	SDL_Texture* flippers_texture[FLIPPER_MAX];
@@ -54,8 +57,9 @@ public:
 	SDL_Texture* score_text = nullptr;
 	SDL_Texture* balls_text = nullptr;
 	SDL_Texture* score_texture[10];
-	SDL_Texture* spring_texture;
+	SDL_Texture* spring_texture= nullptr;
 	SDL_Texture* game_over_texture = nullptr;
+	SDL_Texture* lighton_texture = nullptr;
 
 	SDL_Rect* scoreBG;
 	SDL_Rect* gameoverBG;
@@ -64,6 +68,9 @@ public:
 
 	int scoreX = 0;
 	int offsetScoreX = 17;
+	int bonuscounter = 0;
+	int lightsofftimer = 200;
+	bool fullbonus = false;
 
 	int score_print[10];
 	int score, lastscore, highscore;

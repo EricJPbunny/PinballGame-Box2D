@@ -121,11 +121,9 @@ Target * ModulePhysics::CreateTarget(int x, int y, int width, int height, float3
 {
 	Target* target = new Target();
 	target->on = false;
-	target->texture_off = App->textures->Load("pinball/targettextureoff.png");
-	target->texture_on = App->textures->Load("pinball/targettextureon.png");
-	target = (Target*)CreateRectangleSensor(x, y, width, height);
-	target->type = TYPE::TARGET;
-	target->body->SetTransform(target->body->GetPosition(), angle);
+	target->TBody = CreateRectangleSensor(x, y, width, height);
+	target->TBody->type = TYPE::TARGET;
+	target->TBody->body->SetTransform(target->TBody->body->GetPosition(), angle);
 	
 	return target;
 }
