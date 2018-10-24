@@ -105,6 +105,7 @@ void ModuleMainScene::LoadTextures()
 	sounds[SOUNDS::BONUS] = App->audio->LoadFx("pinball/bonus.wav");
 	sounds[SOUNDS::TARGET] = App->audio->LoadFx("pinball/target.wav");
 	sounds[SOUNDS::BONUSMAX] = App->audio->LoadFx("pinball/bonusmax.wav");
+	App->audio->PlayMusic("pinball/maintheme.ogg");
 }
 
 void ModuleMainScene::CreateBoard()
@@ -351,6 +352,11 @@ void ModuleMainScene::UpdateInputs()
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 	{
 		launcher_top->body->ApplyForce({ 0, 10000 }, { PIXEL_TO_METERS(357), PIXEL_TO_METERS(636) }, true);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP)
+	{
+		App->audio->PlayFx(sounds[SOUNDS::LAUNCHER]);
 	}
 }
 
