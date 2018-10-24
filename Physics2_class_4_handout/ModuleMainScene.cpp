@@ -38,6 +38,7 @@ ModuleMainScene::ModuleMainScene(Application* app, bool start_enabled) : Module(
 	for (int i = 0; i < 8; i++)
 	{
 		targets[i] = nullptr;
+		light_position[i] = nullptr;
 	}
 }
 
@@ -86,6 +87,7 @@ void ModuleMainScene::LoadTextures()
 	score_texture[7] = App->textures->Load("pinball/7.png");
 	score_texture[8] = App->textures->Load("pinball/8.png");
 	score_texture[9] = App->textures->Load("pinball/9.png");
+	lighton_texture = App->textures->Load("pinball/LightOn.png");
 	spring_texture = App->textures->Load("pinball/Spring.png");
 	score_text = App->textures->Load("pinball/score.png");
 	balls_text = App->textures->Load("pinball/balls.png");
@@ -145,6 +147,16 @@ void ModuleMainScene::CreateBoard()
 	targets[5] = App->physics->CreateTarget(62, 160, 5, 20, 0.40f);
 	targets[6] = App->physics->CreateTarget(231, 34, 5, 20, 0.75f);
 	targets[7] = App->physics->CreateTarget(340, 34, 5, 20, -0.75f);
+	//create points to lights
+	
+	light_position[0] = new b2Vec2({ 67, 380 });
+	light_position[1] = new b2Vec2({ 52, 269 });
+	light_position[2] = new b2Vec2({ 51, 234 });
+	light_position[3] = new b2Vec2({ 362, 343 });
+	light_position[4] = new b2Vec2({ 363, 201 });
+	light_position[5] = new b2Vec2({ 62, 160 });
+	light_position[6] = new b2Vec2({ 231, 34 });
+	light_position[7] = new b2Vec2({ 340, 34 });
 	scoreBG = new SDL_Rect({0, 720, 378, 60});
 	gameoverBG = new SDL_Rect({0, 0, SCREEN_WIDTH, SCREEN_HEIGHT});
 }
@@ -241,16 +253,15 @@ void ModuleMainScene::OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* c
 		score += 100;
 		break;
 	case TARGET: App->audio->PlayFx(target_fx);
-		Target* bTarget;
-		score += 100;
-		/*b2Vec2 aux;
-		aux = bodyB->body->GetPosition();*/
-		/*int index;
-		if (aux > {-1, -1})
-		{
 		
+		score += 100;
+		for (int i = 0; i < 8; i++)
+		{
+			if (targets[i]->TBody == bodyB)
+			{
+				targets[i]->on = true;
+			}
 		}
-		lights[index] = true;*/
 		
 		break;
 	case BONUS: App->audio->PlayFx(bonus_fx); 
@@ -374,6 +385,19 @@ void ModuleMainScene::Draw()
 		SDL_RenderFillRect(App->renderer->renderer, gameoverBG);
 		App->renderer->Blit(game_over_texture, 40, SCREEN_HEIGHT / 2, NULL);
 	}
+	//Draw lights on
+	for (int i = 0; i < 8; ++i)
+	{
+		if (targets[i]->on == true)
+		{
+			App->renderer->Blit(lighton_texture , light_position[i]->x, light_position[i]->y, NULL);
+			/*if (targets[7]->on == true)
+			{
+				targets[i]->on = false;
+			}*/
+		}
+	}
+	
 }
 
 void ModuleMainScene::SpawnBall()

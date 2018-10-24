@@ -33,11 +33,11 @@ public:
 	Module* listener;
 };
 
-struct Target:public PhysBody
+struct Target
 {
+	PhysBody* TBody;
+	type type = TARGET;
 	bool on;
-	SDL_Texture* texture_on;
-	SDL_Texture* texture_off;
 };
 
 // Module --------------------------------------

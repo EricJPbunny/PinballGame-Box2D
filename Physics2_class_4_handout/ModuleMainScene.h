@@ -9,6 +9,7 @@ class b2RevoluteJoint;
 class b2DistanceJoint;
 class b2Contact;
 struct Target;
+struct b2Vec2;
 
 enum FLIPPER {BOTTOMRIGHT, BOTTOMLEFT, RIGHT, LEFT, TOPRIGHT, TOPLEFT, FLIPPER_MAX};
 
@@ -31,7 +32,7 @@ public:
 	void Draw();
 	void UpdateGameOver();
 	void SpawnBall();
-	bool lights[8];
+	
 
 public:
 	p2List<PhysBody*> balls;
@@ -46,6 +47,7 @@ public:
 	PhysBody* launcher_base = nullptr;
 	b2RevoluteJoint* flipper_joints[FLIPPER_MAX];
 	b2DistanceJoint* launcher_joint = nullptr;
+	b2Vec2* light_position[8];
 
 	SDL_Texture* board_texture = nullptr;
 	SDL_Texture* flippers_texture[FLIPPER_MAX];
@@ -53,8 +55,9 @@ public:
 	SDL_Texture* score_text = nullptr;
 	SDL_Texture* balls_text = nullptr;
 	SDL_Texture* score_texture[10];
-	SDL_Texture* spring_texture;
+	SDL_Texture* spring_texture= nullptr;
 	SDL_Texture* game_over_texture = nullptr;
+	SDL_Texture* lighton_texture = nullptr;
 
 	SDL_Rect* scoreBG;
 	SDL_Rect* gameoverBG;
