@@ -116,8 +116,8 @@ void ModuleMainScene::CreateBoard()
 	board_body.add(App->physics->CreateChain(0, 0, Pinball_GameBoard, length));
 	board_body.add(App->physics->CreateChain(0, 0, Right_Low_Bouncer, 10));
 	board_body.add(App->physics->CreateChain(0, 0, Left_Low_Bouncer, 10));
-	board_body.add(App->physics->CreateChain(0, 0, Right_Wall, 28));
-	board_body.add(App->physics->CreateChain(0, 0, Left_wall, 26));
+	board_body.add(App->physics->CreateChain(0, 0, Right_Wall, 26));
+	board_body.add(App->physics->CreateChain(0, 0, Left_wall, 22));
 	board_body.add(App->physics->CreateChain(0, 0, Top_Left_Turbo, 34));
 	board_body.add(App->physics->CreateChain(0, 0, Mid_Left_Thingy, 30));
 	left_low_bumper = App->physics->CreateChain(0, 0, LeftLowBumper, 8);
