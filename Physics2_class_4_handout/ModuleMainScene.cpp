@@ -95,6 +95,8 @@ void ModuleMainScene::LoadTextures()
 	lighton_texture = App->textures->Load("pinball/LightOn.png");
 	spring_texture = App->textures->Load("pinball/Spring.png");
 	score_text = App->textures->Load("pinball/score.png");
+	lastscore_text = App->textures->Load("pinball/lastscore.png");
+	highscore_text = App->textures->Load("pinball/highscore.png");
 	balls_text = App->textures->Load("pinball/balls.png");
 	game_over_texture = App->textures->Load("pinball/gameover.png");
 
@@ -370,6 +372,9 @@ void ModuleMainScene::CheckBallLimits()
 		if (nBalls == 0)
 		{
 			game_over = true;
+			SetGameOverScore(lastscore_print, lastscore);
+			if (highscore < score) highscore = score;
+			SetGameOverScore(highscore_print, highscore);
 			ball->data->body->SetTransform({ PIXEL_TO_METERS(357), PIXEL_TO_METERS(599) }, 0);
 			for (int i = 0; i < 8; i++)
 			{
@@ -425,6 +430,14 @@ void ModuleMainScene::Draw()
 		SDL_SetRenderDrawColor(App->renderer->renderer, 0, 0, 0, 150);
 		SDL_RenderFillRect(App->renderer->renderer, gameoverBG);
 		App->renderer->Blit(game_over_texture, 40, SCREEN_HEIGHT / 2, NULL);
+		App->renderer->Blit(lastscore_text, 40, SCREEN_HEIGHT / 1.5f, NULL);
+		App->renderer->Blit(highscore_text, 40, SCREEN_HEIGHT / 1.4f, NULL);
+		for (int i = 0; i < 9; i++)
+		{
+			App->renderer->Blit(score_texture[lastscore_print[i]], lastScoreX += offsetScoreX, SCREEN_HEIGHT / 1.5f, NULL);
+			App->renderer->Blit(score_texture[highscore_print[i]], lastScoreX, SCREEN_HEIGHT / 1.4f, NULL);
+		}
+		lastScoreX = 150;
 	}
 	//Draw lights on
 	for (int i = 0; i < 8; ++i)
@@ -467,12 +480,21 @@ void ModuleMainScene::UpdateGameOver()
 		game_over = false;
 		nBalls = 3;
 		lastscore = score;
-		if (highscore < score)
-		{
-			highscore = score;
-		}
 		score = 0;
 	}
+}
+
+void ModuleMainScene::SetGameOverScore(int print[], int value)
+{
+	print[8] = value % 10;
+	print[7] = value / 10 % 10;
+	print[6] = value / 100 % 10;
+	print[5] = value / 1000 % 10;
+	print[4] = value / 10000 % 10;
+	print[3] = value / 100000 % 10;
+	print[2] = value / 1000000 % 10;
+	print[1] = value / 10000000 % 10;
+	print[0] = value / 100000000 % 10;
 }
 
 

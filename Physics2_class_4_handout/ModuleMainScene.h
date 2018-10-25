@@ -28,10 +28,12 @@ public:
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB, b2Contact* contact);
 	void UpdateScore();
+	
 	void UpdateInputs();
 	void CheckBallLimits();
 	void Draw();
 	void UpdateGameOver();
+	void SetGameOverScore(int print[], int value);
 	void SpawnBall();
 	void TurnLightsOff();
 	
@@ -55,6 +57,8 @@ public:
 	SDL_Texture* flippers_texture[FLIPPER_MAX];
 	SDL_Texture* ball_texture = nullptr;
 	SDL_Texture* score_text = nullptr;
+	SDL_Texture* highscore_text = nullptr;
+	SDL_Texture* lastscore_text = nullptr;
 	SDL_Texture* balls_text = nullptr;
 	SDL_Texture* score_texture[10];
 	SDL_Texture* spring_texture= nullptr;
@@ -67,13 +71,17 @@ public:
 	uint sounds[SOUNDS::SOUNDS_MAX];
 
 	int scoreX = 0;
+	int lastScoreX = 0;
 	int offsetScoreX = 17;
 	int bonuscounter = 0;
 	int lightsofftimer = 200;
 	bool fullbonus = false;
 
 	int score_print[10];
-	int score, lastscore, highscore;
+	int lastscore_print[10];
+	int highscore_print[10];
+	int score, lastscore;
+	int highscore = 50000;
 	int nBalls;
 
 	bool game_over = false;
