@@ -41,6 +41,8 @@ public:
 public:
 	p2List<PhysBody*> balls;
 	p2List<PhysBody*> board_body;
+	PhysBody* left_low_bumper;
+	PhysBody* right_low_bumper;
 	PhysBody* right_wall = nullptr;
 	PhysBody* flippers[FLIPPER_MAX];
 	PhysBody* flipper_anchors[FLIPPER_MAX];

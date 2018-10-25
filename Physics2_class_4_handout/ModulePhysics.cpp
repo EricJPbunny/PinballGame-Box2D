@@ -257,7 +257,7 @@ PhysBody * ModulePhysics::CreateBumper(int x, int y, int radius)
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
 	fixture.friction = 0.0f;
-	fixture.restitution = 0.75f;
+	fixture.restitution = 1.0f;
 
 	b->CreateFixture(&fixture);
 	PhysBody* pbody = new PhysBody;

@@ -63,6 +63,21 @@ int Pinball_GameBoard[112] = {
 	133, 19
 };
 
+int LeftLowBumper[8] = {
+	78, 536,
+	81, 535,
+	116, 595,
+	112, 597
+};
+
+int RightLowBumper[8] = {
+	270, 537,
+	275, 538,
+	240, 597,
+	236, 594
+};
+
+
 int Right_Low_Bouncer[10] = {
 	274, 537,
 	287, 540,

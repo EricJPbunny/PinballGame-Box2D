@@ -120,6 +120,10 @@ void ModuleMainScene::CreateBoard()
 	board_body.add(App->physics->CreateChain(0, 0, Left_wall, 26));
 	board_body.add(App->physics->CreateChain(0, 0, Top_Left_Turbo, 34));
 	board_body.add(App->physics->CreateChain(0, 0, Mid_Left_Thingy, 30));
+	left_low_bumper = App->physics->CreateChain(0, 0, LeftLowBumper, 8);
+	left_low_bumper->body->GetFixtureList()->SetRestitution(0.75f);
+	right_low_bumper= App->physics->CreateChain(0, 0, RightLowBumper, 8);
+	right_low_bumper->body->GetFixtureList()->SetRestitution(0.75f);
 
 	//Creating flippers
 	flipper_anchors[BOTTOMRIGHT] = App->physics->CreateCircle(231, 673, 6);
@@ -445,10 +449,6 @@ void ModuleMainScene::Draw()
 		if (targets[i]->on == true)
 		{
 			App->renderer->Blit(lighton_texture , light_position[i]->x, light_position[i]->y, NULL);
-			/*if (targets[7]->on == true)
-			{
-				targets[i]->on = false;
-			}*/
 		}
 	}
 	
