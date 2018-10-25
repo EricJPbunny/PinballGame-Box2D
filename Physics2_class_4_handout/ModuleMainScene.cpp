@@ -167,14 +167,14 @@ void ModuleMainScene::CreateBoard()
 	targets[7] = App->physics->CreateTarget(340, 34, 5, 20, -0.75f);
 	//create points to lights
 	
-	light_position[0] = new b2Vec2({ 67, 380 });
-	light_position[1] = new b2Vec2({ 52, 269 });
-	light_position[2] = new b2Vec2({ 51, 234 });
-	light_position[3] = new b2Vec2({ 362, 343 });
-	light_position[4] = new b2Vec2({ 363, 201 });
-	light_position[5] = new b2Vec2({ 62, 160 });
-	light_position[6] = new b2Vec2({ 231, 34 });
-	light_position[7] = new b2Vec2({ 340, 34 });
+	light_position[0] = new b2Vec2({ 72, 385 });
+	light_position[1] = new b2Vec2({ 63, 254 });
+	light_position[2] = new b2Vec2({ 62, 218 });
+	light_position[3] = new b2Vec2({ 320, 330 });
+	light_position[4] = new b2Vec2({ 320, 185 });
+	light_position[5] = new b2Vec2({ 73, 154 });
+	light_position[6] = new b2Vec2({ 234, 38 });
+	light_position[7] = new b2Vec2({ 307, 38 });
 	scoreBG = new SDL_Rect({0, 720, 378, 60});
 	gameoverBG = new SDL_Rect({0, 0, SCREEN_WIDTH, SCREEN_HEIGHT});
 }
