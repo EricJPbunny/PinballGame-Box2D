@@ -10,7 +10,6 @@ class ModuleTextures;
 class ModuleInput;
 class ModuleAudio;
 class ModulePlayer;
-class ModuleSceneIntro;
 class ModuleMainScene;
 class ModulePhysics;
 
@@ -24,7 +23,6 @@ public:
 	ModuleAudio* audio;
 	ModulePlayer* player;
 	ModuleMainScene* scene_main;
-	ModuleSceneIntro* scene_intro;
 	ModulePhysics* physics;
 
 private:

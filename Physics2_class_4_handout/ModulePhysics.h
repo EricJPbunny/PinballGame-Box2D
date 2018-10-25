@@ -71,4 +71,5 @@ private:
 	b2MouseJoint* mouse_joint;
 	b2Body* ground;
 	b2Body* selected_body = nullptr;
+	p2List <PhysBody*> worldbodies;
 };

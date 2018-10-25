@@ -82,6 +82,9 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
 	b->SetUserData(pbody);
 	pbody->width = pbody->height = radius;
 
+	worldbodies.add(pbody);
+
+
 	return pbody;
 }
 
@@ -107,6 +110,8 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
 	pbody->width = width * 0.5f;
 	pbody->height = height * 0.5f;
 
+	worldbodies.add(pbody);
+
 	return pbody;
 }
 
@@ -114,6 +119,7 @@ PhysBody * ModulePhysics::CreateBonus(int x, int y, int width, int height)
 {
 	PhysBody* bonus = CreateRectangleSensor(x, y, width, height);
 	bonus->type = TYPE::BONUS;
+	worldbodies.add(bonus);
 	return bonus;
 }
 
@@ -124,7 +130,7 @@ Target * ModulePhysics::CreateTarget(int x, int y, int width, int height, float3
 	target->TBody = CreateRectangleSensor(x, y, width, height);
 	target->TBody->type = TYPE::TARGET;
 	target->TBody->body->SetTransform(target->TBody->body->GetPosition(), angle);
-	
+	worldbodies.add(target->TBody);
 	return target;
 }
 
@@ -151,6 +157,8 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 	b->SetUserData(pbody);
 	pbody->width = width;
 	pbody->height = height;
+
+	worldbodies.add(pbody);
 
 	return pbody;
 }
@@ -187,6 +195,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, b2Body
 	b->SetUserData(pbody);
 	pbody->width = pbody->height = 0;
 
+	worldbodies.add(pbody);
 
 	return pbody;
 }
@@ -226,6 +235,7 @@ PhysBody * ModulePhysics::CreateFlipper(int id, int x, int y, int * points, int 
 	def.localAnchorA = { 0,0 };
 	def.localAnchorB = { PIXEL_TO_METERS(anchorX), PIXEL_TO_METERS(anchorY) };
 	App->scene_main->flipper_joints[id] = (b2RevoluteJoint*)App->physics->world->CreateJoint(&def);
+	worldbodies.add(flipper);
 	return flipper;
 }
 
@@ -238,6 +248,7 @@ PhysBody * ModulePhysics::CreateLauncher(int x, int y, int width, int height, in
 	def.dampingRatio = damping;
 	def.Initialize(App->scene_main->launcher_base->body, launcher->body, { PIXEL_TO_METERS(357), PIXEL_TO_METERS(636) }, { PIXEL_TO_METERS(357), PIXEL_TO_METERS(710) });
 	App->scene_main->launcher_joint = (b2DistanceJoint*)App->physics->world->CreateJoint(&def);
+	worldbodies.add(launcher);
 	return launcher;
 }
 
@@ -266,6 +277,7 @@ PhysBody * ModulePhysics::CreateBumper(int x, int y, int radius)
 	b->SetUserData(pbody);
 	
 	pbody->width = pbody->height = radius * 2;
+	worldbodies.add(pbody);
 
 	return pbody;
 }
@@ -399,6 +411,17 @@ update_status ModulePhysics::PostUpdate()
 bool ModulePhysics::CleanUp()
 {
 	LOG("Destroying physics world");
+
+	p2List_item <PhysBody*>* body;
+
+	body = worldbodies.getFirst();
+
+	//Having some issues while cleaning
+	//while (body->next)
+	//{
+	//	world->DestroyBody(body->data->body);
+	//	body = body->next;
+	//}
 
 	// Delete the whole physics world!
 	delete world;
