@@ -1,9 +1,0 @@
-// Pivot 0, 0
-int Pinball_GameBoardlol[2] = {
-	270, 537
-};
-
-// Pivot 0.000000, 0.000000
-float Pinball_GameBoardlol[2] = {
-	0.714286f, 0.745833f
-};

@@ -1,9 +1,0 @@
-// Pivot 0, 0
-int FlipperL[2] = {
-	11, 11
-};
-
-// Pivot 0.000000, 0.000000
-float FlipperL[2] = {
-	0.203704f, 0.458333f
-};
